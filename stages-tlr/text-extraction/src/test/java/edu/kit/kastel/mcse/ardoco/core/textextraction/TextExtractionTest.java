@@ -25,8 +25,8 @@ import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.helper.StageTest;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
-import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
 
 class TextExtractionTest extends StageTest<TextExtraction, TextExtractionTest.TextProject, TextExtractionTest.TextExtractionResult> {
     public TextExtractionTest() {
