@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.tlr.textextraction;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.tlr.textextraction.TextStateImpl;
 import org.eclipse.collections.api.factory.SortedMaps;
 import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;

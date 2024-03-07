@@ -1,7 +1,10 @@
 /* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.tlr.tests.integration;
 
-import static edu.kit.kastel.mcse.ardoco.tlr.tests.integration.TraceLinkEvaluationIT.*;
+import static edu.kit.kastel.mcse.ardoco.tlr.tests.integration.TraceLinkEvaluationIT.DATA_MAP;
+import static edu.kit.kastel.mcse.ardoco.tlr.tests.integration.TraceLinkEvaluationIT.OUTPUT;
+import static edu.kit.kastel.mcse.ardoco.tlr.tests.integration.TraceLinkEvaluationIT.PROJECT_RESULTS;
+import static edu.kit.kastel.mcse.ardoco.tlr.tests.integration.TraceLinkEvaluationIT.RESULTS;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import edu.kit.kastel.mcse.ardoco.tlr.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.TLRUtil;
-import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.files.TLGoldStandardFile;
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -30,12 +30,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadSamTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
+import edu.kit.kastel.mcse.ardoco.tlr.execution.ArDoCoForSadSamTraceabilityLinkRecovery;
+import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.TLRUtil;
+import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.files.TLGoldStandardFile;
 
 /**
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo.

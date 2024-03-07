@@ -1,5 +1,5 @@
-/* Licensed under MIT 2022-2023. */
-package edu.kit.kastel.mcse.ardoco.core.text.providers.base;
+/* Licensed under MIT 2022-2024. */
+package edu.kit.kastel.mcse.ardoco.tlr.text.providers.base;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.junit.jupiter.api.Assertions;
