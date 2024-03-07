@@ -1,6 +1,8 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.tlr.tests.integration;
 
+import static edu.kit.kastel.mcse.ardoco.tlr.tests.integration.TraceLinkEvaluationIT.OUTPUT;
+
 import java.io.File;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -16,11 +18,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
+import edu.kit.kastel.mcse.ardoco.tlr.execution.ArDoCoForSadCodeTraceabilityLinkRecovery;
 
 class SadCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation<CodeProject> {
 
@@ -36,7 +38,7 @@ class SadCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecovery
         File textInput = codeProject.getTextFile();
         File inputCode = getInputCode(codeProject);
         SortedMap<String, String> additionalConfigsMap = new TreeMap<>();
-        File outputDir = new File(TraceLinkEvaluationIT.OUTPUT);
+        File outputDir = new File(OUTPUT);
 
         var runner = new ArDoCoForSadCodeTraceabilityLinkRecovery(name);
         runner.setUp(textInput, inputCode, additionalConfigsMap, outputDir);

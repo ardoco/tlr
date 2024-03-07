@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
 
-import edu.kit.kastel.mcse.ardoco.tlr.textextraction.TextExtraction;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.impl.factory.Lists;

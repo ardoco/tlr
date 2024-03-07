@@ -4,8 +4,6 @@ package edu.kit.kastel.mcse.ardoco.tlr.textextraction;
 import java.util.Comparator;
 import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.tlr.textextraction.NounMappingImpl;
-import edu.kit.kastel.mcse.ardoco.tlr.textextraction.PhraseMappingImpl;
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedSets;
@@ -58,6 +56,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     private final TextStateStrategy strategy;
 
     // Configuration Test
+    @SuppressWarnings("unused")
     private TextStateImpl() {
         super();
         this.strategy = null;

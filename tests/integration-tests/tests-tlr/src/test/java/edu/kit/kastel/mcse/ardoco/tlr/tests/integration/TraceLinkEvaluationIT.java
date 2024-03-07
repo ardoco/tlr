@@ -15,9 +15,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
-import edu.kit.kastel.mcse.ardoco.tlr.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.TestLink;
-
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
@@ -35,11 +32,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.RepositoryHandler;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
+import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.TestLink;
 import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.files.TLDiffFile;
 import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.files.TLLogFile;
 import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.files.TLModelFile;

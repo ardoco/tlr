@@ -1,5 +1,5 @@
-/* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.models.generators;
+/* Licensed under MIT 2023-2024. */
+package edu.kit.kastel.mcse.ardoco.tlr.models.generators;
 
 import java.util.List;
 import java.util.Set;

@@ -9,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.tlr.textextraction.agents.AbbreviationAgent;
-import edu.kit.kastel.mcse.ardoco.tlr.textextraction.TextStateImpl;
 import edu.kit.kastel.mcse.ardoco.tlr.textextraction.agents.InitialTextAgent;
 import edu.kit.kastel.mcse.ardoco.tlr.textextraction.agents.PhraseAgent;
 

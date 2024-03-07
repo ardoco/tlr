@@ -1,11 +1,11 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.tlr.models.generators.uml;
 
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.tlr.models.connectors.generators.architecture.uml.UmlExtractor;
-import edu.kit.kastel.mcse.ardoco.core.models.generators.ArchitectureExtractorTest;
+import edu.kit.kastel.mcse.ardoco.tlr.models.generators.ArchitectureExtractorTest;
 
 class UmlExtractorTest extends ArchitectureExtractorTest {
 
