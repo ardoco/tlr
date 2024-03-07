@@ -22,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public class OriginalTextStateStrategy extends DefaultTextStateStrategy implements Serializable {
 
-    OriginalTextStateStrategy(GlobalConfiguration globalConfiguration) {
+    protected OriginalTextStateStrategy(GlobalConfiguration globalConfiguration) {
         super(globalConfiguration);
     }
 
