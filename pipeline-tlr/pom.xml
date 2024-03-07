@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>io.github.ardoco.core</groupId>
+        <groupId>io.github.ardoco.tlr</groupId>
         <artifactId>parent-tlr</artifactId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
@@ -13,17 +13,17 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.ardoco.core</groupId>
+            <groupId>io.github.ardoco.tlr</groupId>
             <artifactId>code-traceability</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.ardoco.core</groupId>
+            <groupId>io.github.ardoco.tlr</groupId>
             <artifactId>connection-generator</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.ardoco.core</groupId>
+            <groupId>io.github.ardoco.tlr</groupId>
             <artifactId>model-provider</artifactId>
             <version>${revision}</version>
         </dependency>
@@ -40,17 +40,17 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.github.ardoco.core</groupId>
+            <groupId>io.github.ardoco.tlr</groupId>
             <artifactId>recommendation-generator</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.ardoco.core</groupId>
+            <groupId>io.github.ardoco.tlr</groupId>
             <artifactId>text-extraction</artifactId>
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.ardoco.core</groupId>
+            <groupId>io.github.ardoco.tlr</groupId>
             <artifactId>text-preprocessing</artifactId>
             <version>${revision}</version>
         </dependency>
@@ -61,11 +61,6 @@
             <version>${revision}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
