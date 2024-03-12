@@ -19,6 +19,8 @@ jobs:
       deploy: true
       with-submodules: true
       runs-on: self-hosted
+      install-self: true
+      dependencies: "https://github.com/ArDoCo/InconsistencyDetection.git"
     secrets:
       OSSRH_USER: ${{secrets.OSSRH_USER}}
       OSSRH_TOKEN: ${{secrets.OSSRH_TOKEN}}
