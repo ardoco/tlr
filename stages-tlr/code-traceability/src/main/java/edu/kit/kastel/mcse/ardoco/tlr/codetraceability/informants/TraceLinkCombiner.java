@@ -9,11 +9,12 @@ import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -28,7 +29,7 @@ public class TraceLinkCombiner extends Informant {
 
     @Override
     public void process() {
-        MutableSet<SadCodeTraceLink> transitiveTraceLinks = Sets.mutable.empty();
+        MutableSet<TraceLink<SentenceEntity, CodeCompilationUnit>> transitiveTraceLinks = Sets.mutable.empty();
         CodeTraceabilityState codeTraceabilityState = DataRepositoryHelper.getCodeTraceabilityState(getDataRepository());
         ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(getDataRepository());
         ConnectionStates connectionStates = DataRepositoryHelper.getConnectionStates(getDataRepository());
@@ -42,18 +43,19 @@ public class TraceLinkCombiner extends Informant {
             var connectionState = connectionStates.getConnectionState(metamodel);
             var sadSamTraceLinks = connectionState.getTraceLinks();
 
-            var combinedLinks = combineToTransitiveTraceLinks(sadSamTraceLinks, samCodeTraceLinks);
+            var combinedLinks = combineToTransitiveTraceLinks(Sets.immutable.withAll(sadSamTraceLinks), samCodeTraceLinks);
             transitiveTraceLinks.addAll(combinedLinks.toList());
         }
 
         codeTraceabilityState.addSadCodeTraceLinks(transitiveTraceLinks);
     }
 
-    private ImmutableSet<SadCodeTraceLink> combineToTransitiveTraceLinks(ImmutableSet<SadSamTraceLink> sadSamTraceLinks,
-            ImmutableSet<SamCodeTraceLink> samCodeTraceLinks) {
-        MutableSet<SadCodeTraceLink> transitiveTraceLinks = Sets.mutable.empty();
+    private ImmutableSet<TraceLink<SentenceEntity, CodeCompilationUnit>> combineToTransitiveTraceLinks(
+            ImmutableSet<TraceLink<SentenceEntity, ArchitectureEntity>> sadSamTraceLinks,
+            ImmutableSet<TraceLink<ArchitectureEntity, CodeCompilationUnit>> samCodeTraceLinks) {
+        MutableSet<TraceLink<SentenceEntity, CodeCompilationUnit>> transitiveTraceLinks = Sets.mutable.empty();
         for (var sadSamTraceLink : sadSamTraceLinks) {
-            String modelElementUid = sadSamTraceLink.getModelElementUid();
+            String modelElementUid = sadSamTraceLink.getSecondEndpoint().getId();
             for (var samCodeTraceLink : samCodeTraceLinks) {
                 String samCodeTraceLinkModelElementId = samCodeTraceLink.getEndpointTuple().firstEndpoint().getId();
                 if (modelElementUid.equals(samCodeTraceLinkModelElementId)) {

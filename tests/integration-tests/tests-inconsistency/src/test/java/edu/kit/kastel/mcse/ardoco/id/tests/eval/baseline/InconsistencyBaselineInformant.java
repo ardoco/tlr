@@ -40,7 +40,7 @@ public class InconsistencyBaselineInformant extends Informant {
             var modelState = modelStates.getModelExtractionState(model);
             Metamodel metamodel = modelState.getMetamodel();
             var traceLinks = connectionStates.getConnectionState(metamodel).getTraceLinks();
-            var sentencesWithTraceLinks = traceLinks.collect(SadSamTraceLink::getSentenceNumber).toSet();
+            var sentencesWithTraceLinks = traceLinks.collect(tl -> tl.getFirstEndpoint().getSentence().getSentenceNumber()).toSet();
             MutableSet<Integer> sentencesWithoutTraceLinks = sentences.withoutAll(sentencesWithTraceLinks);
 
             InconsistencyState inconsistencyState = inconsistencyStates.getInconsistencyState(metamodel);
