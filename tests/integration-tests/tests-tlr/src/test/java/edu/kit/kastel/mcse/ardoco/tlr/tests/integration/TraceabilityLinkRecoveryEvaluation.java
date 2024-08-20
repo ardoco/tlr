@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
@@ -31,7 +30,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
+import edu.kit.kastel.mcse.ardoco.metrics.ClassificationMetricsCalculator;
 
 public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardProject> {
     protected static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluation.class);
@@ -160,27 +159,12 @@ public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardP
 
         Set<String> distinctTraceLinks = new LinkedHashSet<>(results.castToCollection());
         Set<String> distinctGoldStandard = new LinkedHashSet<>(goldStandard.castToCollection());
+        int confusionMatrixSum = getConfusionMatrixSum(arDoCoResult);
 
-        // True Positives are the trace links that are contained on both lists
-        Set<String> truePositives = distinctTraceLinks.stream()
-                .filter(tl -> isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
-                .collect(Collectors.toSet());
-        ImmutableList<String> truePositivesList = Lists.immutable.ofAll(truePositives);
+        var calculator = ClassificationMetricsCalculator.getInstance();
+        var classification = calculator.calculateMetrics(distinctTraceLinks, distinctGoldStandard, confusionMatrixSum);
+        return new EvaluationResults<>(classification);
 
-        // False Positives are the trace links that are only contained in the result set
-        Set<String> falsePositives = distinctTraceLinks.stream()
-                .filter(tl -> !isTraceLinkContainedInGoldStandard(tl, distinctGoldStandard))
-                .collect(Collectors.toSet());
-        ImmutableList<String> falsePositivesList = Lists.immutable.ofAll(falsePositives);
-
-        // False Negatives are the trace links that are only contained in the gold standard
-        Set<String> falseNegatives = distinctGoldStandard.stream()
-                .filter(gstl -> !isGoldStandardTraceLinkContainedInTraceLinks(gstl, distinctTraceLinks))
-                .collect(Collectors.toSet());
-        ImmutableList<String> falseNegativesList = Lists.immutable.ofAll(falseNegatives);
-
-        int trueNegatives = getConfusionMatrixSum(arDoCoResult) - truePositives.size() - falsePositives.size() - falseNegatives.size();
-        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList, falseNegativesList));
     }
 
     protected abstract ImmutableList<String> createTraceLinkStringList(ArDoCoResult arDoCoResult);

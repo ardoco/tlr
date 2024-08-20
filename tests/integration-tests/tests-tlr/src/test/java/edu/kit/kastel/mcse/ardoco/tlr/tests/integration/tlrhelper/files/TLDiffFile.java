@@ -89,16 +89,16 @@ public class TLDiffFile {
             builder.append(NUMBER_FORMAT.format(newResult.f1() - oldResult.f1())).append(" F1");
             builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
-            var newTruePositives = findNewLinks(oldResult.truePositives().castToList(), newResult.truePositives().castToList());
+            var newTruePositives = findNewLinks(oldResult.truePositives(), newResult.truePositives());
             appendList(builder, "New true positives", newTruePositives, data);
 
-            var newFalsePositives = findNewLinks(oldResult.falsePositives().castToList(), newResult.falsePositives().castToList());
+            var newFalsePositives = findNewLinks(oldResult.falsePositives(), newResult.falsePositives());
             appendList(builder, "New false positives", newFalsePositives, data);
 
-            var newFalseNegatives = findNewLinks(oldResult.falseNegatives().castToList(), newResult.falseNegatives().castToList());
+            var newFalseNegatives = findNewLinks(oldResult.falseNegatives(), newResult.falseNegatives());
             appendList(builder, "New false negatives", newFalseNegatives, data);
 
-            var lostFalsePositives = findMissingLinks(oldResult.falsePositives().castToList(), newResult.falsePositives().castToList());
+            var lostFalsePositives = findMissingLinks(oldResult.falsePositives(), newResult.falsePositives());
             appendList(builder, "False positives that are now true negatives", lostFalsePositives, data);
 
             builder.append(LINE_SEPARATOR);

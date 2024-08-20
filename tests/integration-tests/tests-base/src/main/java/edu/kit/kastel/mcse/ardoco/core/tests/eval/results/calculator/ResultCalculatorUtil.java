@@ -1,12 +1,13 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator;
 
-import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultVector;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.metrics.ClassificationMetricsCalculator;
+import edu.kit.kastel.mcse.ardoco.metrics.result.AggregationType;
+import edu.kit.kastel.mcse.ardoco.metrics.result.SingleClassificationResult;
 
 /**
  * This utility class provides methods to form the average of several {@link EvaluationResults}
@@ -18,78 +19,31 @@ public final class ResultCalculatorUtil {
     }
 
     public static <T> EvaluationResults<T> calculateAverageResults(ImmutableList<EvaluationResults<T>> results) {
-        int norm = results.size();
-        EvaluationResultVector<T> vector = new EvaluationResultVector<>();
+        var calculator = ClassificationMetricsCalculator.getInstance();
+        var classifications = results.stream().map(EvaluationResults::classificationResult).toList();
 
-        for (var result : results) {
-            var weight = result.getWeight();
-            if (weight <= 0) {
-                norm--;
-                continue;
-            }
-            vector.add(result);
-        }
+        var averages = calculator.calculateAverages(classifications, null);
+        var macroAverage = averages.stream().filter(it -> it.getType() == AggregationType.MACRO_AVERAGE).findFirst().orElseThrow();
 
-        vector.scale(norm);
-        return vector.toEvaluationResults();
+        var macroAverageAsSingle = new SingleClassificationResult<T>(Sets.mutable.empty(), Sets.mutable.empty(), Sets.mutable.empty(), null, macroAverage
+                .getPrecision(), macroAverage.getRecall(), macroAverage.getF1(), macroAverage.getAccuracy(), macroAverage.getSpecificity(), macroAverage
+                        .getPhiCoefficient(), macroAverage.getPhiCoefficientMax(), macroAverage.getPhiOverPhiMax());
+
+        return new EvaluationResults<>(macroAverageAsSingle);
     }
 
     public static <T> EvaluationResults<T> calculateWeightedAverageResults(ImmutableList<EvaluationResults<T>> results) {
-        double weight = 0.0;
-        double precision = .0;
-        double recall = 0.0;
-        double f1 = 0.0;
-        double accuracy = 0.0;
-        double specificity = 0.0;
-        double phi = 0.0;
-        double phiMax = 0.0;
-        double phiOverPhiMax = 0.0;
-        int truePositives = 0;
-        int trueNegatives = 0;
-        int falsePositives = 0;
-        int falseNegatives = 0;
+        var calculator = ClassificationMetricsCalculator.getInstance();
+        var classifications = results.stream().map(EvaluationResults::classificationResult).toList();
 
-        for (var result : results) {
-            double localWeight = result.getWeight();
-            weight += localWeight;
+        var averages = calculator.calculateAverages(classifications, null);
+        var macroAverage = averages.stream().filter(it -> it.getType() == AggregationType.WEIGHTED_AVERAGE).findFirst().orElseThrow();
 
-            precision += localWeight * result.precision();
-            recall += localWeight * result.recall();
-            f1 += localWeight * result.f1();
+        var weightedAverageAsSingle = new SingleClassificationResult<T>(Sets.mutable.empty(), Sets.mutable.empty(), Sets.mutable.empty(), null, macroAverage
+                .getPrecision(), macroAverage.getRecall(), macroAverage.getF1(), macroAverage.getAccuracy(), macroAverage.getSpecificity(), macroAverage
+                        .getPhiCoefficient(), macroAverage.getPhiCoefficientMax(), macroAverage.getPhiOverPhiMax());
 
-            accuracy += localWeight * result.accuracy();
-            specificity += localWeight * result.specificity();
-            phi += localWeight * result.phiCoefficient();
-            phiMax += localWeight * result.phiCoefficientMax();
-            phiOverPhiMax += localWeight * result.phiOverPhiMax();
-
-            truePositives += result.truePositives().size();
-            falseNegatives += result.falseNegatives().size();
-            falsePositives += result.falsePositives().size();
-            trueNegatives += result.trueNegatives();
-
-        }
-
-        precision = precision / weight;
-        recall = recall / weight;
-        f1 = f1 / weight;
-        accuracy = accuracy / weight;
-        specificity = specificity / weight;
-
-        if (truePositives > 0) {
-            phi = EvaluationMetrics.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
-            phiMax = EvaluationMetrics.calculatePhiCoefficientMax(truePositives, falsePositives, falseNegatives, trueNegatives);
-            phiOverPhiMax = EvaluationMetrics.calculatePhiOverPhiMax(truePositives, falsePositives, falseNegatives, trueNegatives);
-
-            return new EvaluationResults<>(precision, recall, f1, Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(), accuracy, phi,
-                    specificity, phiMax, phiOverPhiMax);
-        }
-
-        phi = phi / weight;
-        phiMax /= weight;
-        phiOverPhiMax /= weight;
-        return new EvaluationResults<>(precision, recall, f1, Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(), accuracy, phi,
-                specificity, phiMax, phiOverPhiMax);
+        return new EvaluationResults<>(weightedAverageAsSingle);
 
     }
 }
