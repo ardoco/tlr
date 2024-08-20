@@ -528,13 +528,13 @@ public class InconsistencyDetectionEvaluationIT {
 
     private static void inspectRun(StringBuilder outputBuilder, StringBuilder detailedOutputBuilder, MutableList<EvaluationResults<String>> allResults,
             ArDoCoResult arDoCoResult, EvaluationResults<String> result) {
-        var truePositives = result.truePositives().toList();
+        var truePositives = result.truePositives();
         appendResults(truePositives, detailedOutputBuilder, "True Positives", arDoCoResult, outputBuilder);
 
-        var falsePositives = result.falsePositives().toList();
+        var falsePositives = result.falsePositives();
         appendResults(falsePositives, detailedOutputBuilder, "False Positives", arDoCoResult, outputBuilder);
 
-        var falseNegatives = result.falseNegatives().toList();
+        var falseNegatives = result.falseNegatives();
         appendResults(falseNegatives, detailedOutputBuilder, "False Negatives", arDoCoResult, outputBuilder);
         allResults.add(result);
     }
