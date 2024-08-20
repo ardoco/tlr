@@ -43,7 +43,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.id.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
 import edu.kit.kastel.mcse.ardoco.id.types.MissingModelInstanceInconsistency;
@@ -537,10 +536,7 @@ public class InconsistencyDetectionEvaluationIT {
 
         var falseNegatives = result.falseNegatives().toList();
         appendResults(falseNegatives, detailedOutputBuilder, "False Negatives", arDoCoResult, outputBuilder);
-
-        var results = EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositives.toImmutable(), 0, falsePositives.toImmutable(), falseNegatives
-                .toImmutable()));
-        allResults.add(results);
+        allResults.add(result);
     }
 
     private static void appendResults(List<String> resultList, StringBuilder detailedOutputBuilder, String type, ArDoCoResult arDoCoResult,

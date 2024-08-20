@@ -86,12 +86,12 @@ public class TLSummaryFile {
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         if (!falsePositives.isEmpty()) {
-            var falsePositivesOutput = createFalseLinksOutput("False Positives", falsePositives.castToList(), data, text);
+            var falsePositivesOutput = createFalseLinksOutput("False Positives", falsePositives, data, text);
             builder.append(falsePositivesOutput);
         }
 
         if (!falseNegatives.isEmpty()) {
-            var falseNegativesOutput = createFalseLinksOutput("False Negatives", falseNegatives.castToList(), data, text);
+            var falseNegativesOutput = createFalseLinksOutput("False Negatives", falseNegatives, data, text);
             builder.append(falseNegativesOutput);
         }
     }
