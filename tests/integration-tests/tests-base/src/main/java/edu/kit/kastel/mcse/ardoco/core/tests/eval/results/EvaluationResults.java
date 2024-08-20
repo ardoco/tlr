@@ -22,8 +22,8 @@ public record EvaluationResults<T>(SingleClassificationResult<T> classificationR
     public String toRow(String headerKey, String headerVal) {
         return String.format(Locale.ENGLISH, """
                 %10s & %4s & %4s & %4s & %4s & %4s & %4s & %4s
-                %10s & %4.2f & %4.2f & %4.2f & %4.2f & %4.2f & %4.2f & %4.2f""", headerKey, "P", "R", "F1", "Acc", "Spec", "Phi", "PhiN", headerVal, precision(),
-                recall(), f1(), accuracy(), specificity(), phiCoefficient(), phiOverPhiMax());
+                %10s & %4.2f & %4.2f & %4.2f & %4.2f & %4.2f & %4.2f & %4.2f""", headerKey, "P", "R", "F1", "Acc", "Spec", "Phi", "PhiN", headerVal,
+                precision(), recall(), f1(), accuracy(), specificity(), phiCoefficient(), phiOverPhiMax());
     }
 
     @Override
@@ -52,7 +52,8 @@ public record EvaluationResults<T>(SingleClassificationResult<T> classificationR
         outputBuilder.append(String.format(Locale.ENGLISH, """
                 \tPrecision:%8.2f (min. expected: %.2f)
                 \tRecall:%11.2f (min. expected: %.2f)
-                \tF1:%15.2f (min. expected: %.2f)""", precision(), expectedResults.precision(), recall(), expectedResults.recall(), f1(), expectedResults.f1()));
+                \tF1:%15.2f (min. expected: %.2f)""", precision(), expectedResults.precision(), recall(), expectedResults.recall(), f1(), expectedResults
+                .f1()));
         outputBuilder.append(String.format(Locale.ENGLISH, """
 
                 \tAccuracy:%9.2f (min. expected: %.2f)
@@ -72,8 +73,8 @@ public record EvaluationResults<T>(SingleClassificationResult<T> classificationR
                 \tTN:%15d
                 \tFN:%15d
                 \tP:%16d
-                \tN:%16d""", truePositives().size(), falsePositives().size(), trueNegatives(), falseNegatives().size(), truePositives().size() + falseNegatives().size(),
-                trueNegatives() + falsePositives().size());
+                \tN:%16d""", truePositives().size(), falsePositives().size(), trueNegatives(), falseNegatives().size(), truePositives()
+                .size() + falseNegatives().size(), trueNegatives() + falsePositives().size());
     }
 
     public ImmutableList<T> getFound() {
