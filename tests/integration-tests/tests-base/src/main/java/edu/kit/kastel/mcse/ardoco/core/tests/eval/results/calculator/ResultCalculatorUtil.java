@@ -42,6 +42,15 @@ public final class ResultCalculatorUtil {
         return evaluationResults(macroAverage);
     }
 
+    public static EvaluationResults<String> calculateMicroAverageResults(ImmutableList<EvaluationResults<String>> results) {
+        var averages = getAverages(results);
+        if (averages == null)
+            return null;
+
+        var microAverage = averages.stream().filter(it -> it.getType() == AggregationType.MICRO_AVERAGE).findFirst().orElseThrow();
+        return evaluationResults(microAverage);
+    }
+
     private static <T> EvaluationResults<T> evaluationResults(AggregatedClassificationResult average) {
         var weightedAverageAsSingle = new SingleClassificationResult<T>(Sets.mutable.empty(), Sets.mutable.empty(), Sets.mutable.empty(), null, average
                 .getPrecision(), average.getRecall(), average.getF1(), average.getAccuracy(), average.getSpecificity(), average.getPhiCoefficient(), average
@@ -61,4 +70,5 @@ public final class ResultCalculatorUtil {
 
         return calculator.calculateAverages(classifications, null);
     }
+
 }

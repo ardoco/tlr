@@ -116,7 +116,7 @@ public class InconsistencyDetectionEvaluationIT {
 
         OVERALL_MME_RESULTS.addAll(results);
 
-        EvaluationResults<String> weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
+        EvaluationResults<String> weightedResults = ResultCalculatorUtil.calculateMicroAverageResults(results.toImmutable());
 
         MME_RESULTS.put(goldStandardProject, Tuples.pair(weightedResults, expectedInconsistencyResults));
         logResultsMissingModelInconsistency(goldStandardProject, weightedResults, expectedInconsistencyResults);
