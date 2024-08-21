@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -26,11 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelSentenceLink;
 import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.files.TLDiffFile;
 import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.files.TLLogFile;
@@ -47,7 +43,6 @@ class TraceLinkEvaluationSadCodeDirectIT {
     protected static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
 
     protected static final List<Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>>> RESULTS = new ArrayList<>();
-    protected static final MutableList<EvaluationResults<String>> PROJECT_RESULTS = Lists.mutable.empty();
     protected static final Map<GoldStandardProject, ArDoCoResult> DATA_MAP = new LinkedHashMap<>();
 
     @BeforeAll
@@ -57,7 +52,6 @@ class TraceLinkEvaluationSadCodeDirectIT {
 
     @AfterAll
     static void afterAll() {
-        logOverallResultsForSadSamTlr();
         writeOutputForSadSamTlr();
         System.setProperty(LOGGING_ARDOCO_CORE, "error");
     }
@@ -88,18 +82,6 @@ class TraceLinkEvaluationSadCodeDirectIT {
             }
         }
         return projects;
-    }
-
-    private static void logOverallResultsForSadSamTlr() {
-        if (logger.isInfoEnabled()) {
-            var name = "Overall Weighted";
-            var results = ResultCalculatorUtil.calculateWeightedAverageResults(PROJECT_RESULTS.toImmutable());
-            TestUtil.logResults(logger, name, results);
-
-            name = "Overall Macro";
-            results = ResultCalculatorUtil.calculateMacroAverageResults(PROJECT_RESULTS.toImmutable());
-            TestUtil.logResults(logger, name, results);
-        }
     }
 
     private static void writeOutputForSadSamTlr() {
