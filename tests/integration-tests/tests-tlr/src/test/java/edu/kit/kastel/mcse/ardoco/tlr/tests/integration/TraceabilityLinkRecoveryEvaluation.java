@@ -39,9 +39,11 @@ public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardP
     // If the path separator in the gold standards are changed, this needs to update
     public static final String GOLD_STANDARD_PATH_SEPARATOR = "/";
 
+    // This map can contain TLs from all of its subclasses.
+    // Therefore, #resultHasRequiredData can be used to determine whether the result is valid for the specific subclass.
     protected static Map<GoldStandardProject, ArDoCoResult> resultMap = new LinkedHashMap<>();
 
-    protected ArDoCoResult runTraceLinkEvaluation(T project) {
+    protected final ArDoCoResult runTraceLinkEvaluation(T project) {
         ArDoCoResult result = resultMap.get(project);
         if (result == null || !resultHasRequiredData(result)) {
             ArDoCoRunner runner = getAndSetupRunner(project);
@@ -171,17 +173,4 @@ public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardP
 
     protected abstract int getConfusionMatrixSum(ArDoCoResult arDoCoResult);
 
-    private static boolean areTraceLinksMatching(String goldStandardTraceLink, String traceLink) {
-        traceLink = traceLink.strip();
-        goldStandardTraceLink = goldStandardTraceLink.strip();
-        return (goldStandardTraceLink.equals(traceLink));
-    }
-
-    private static boolean isTraceLinkContainedInGoldStandard(String traceLink, Set<String> goldStandard) {
-        return goldStandard.stream().anyMatch(goldStandardTraceLink -> areTraceLinksMatching(goldStandardTraceLink, traceLink));
-    }
-
-    private static boolean isGoldStandardTraceLinkContainedInTraceLinks(String goldStandardTraceLink, Set<String> traceLinks) {
-        return traceLinks.stream().anyMatch(traceLink -> areTraceLinksMatching(goldStandardTraceLink, traceLink));
-    }
 }

@@ -24,6 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.HistoricProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.helper.StageTest;
 import edu.kit.kastel.mcse.ardoco.tlr.text.providers.TextPreprocessingAgent;
@@ -40,9 +41,7 @@ class TextExtractionTest extends StageTest<TextExtraction, TextExtractionTest.Te
         var wordAbbreviations = DataRepositoryHelper.getTextState(dataRepository).getWordAbbreviations();
         var phraseAbbreviations = DataRepositoryHelper.getTextState(dataRepository).getPhraseAbbreviations();
 
-        var result = new TextExtractionResult(wordAbbreviations, phraseAbbreviations);
-
-        return result;
+        return new TextExtractionResult(wordAbbreviations, phraseAbbreviations);
     }
 
     @Override
@@ -117,26 +116,26 @@ class TextExtractionTest extends StageTest<TextExtraction, TextExtractionTest.Te
                         "FreeSWITCH Event Socket Layer" }), new Disambiguation("SVG", new String[] { "scalable vector graphics" }))  //
         ), //
         TEASTORE_HISTORICAL( //
-                Project.TEASTORE_HISTORICAL, //
+                HistoricProject.TEASTORE_HISTORICAL, //
                 List.of(new Disambiguation("REST", new String[] { "representational state transfer" }), new Disambiguation("JSP", new String[] {
                         "Java Server Page" }), new Disambiguation("JSPs", new String[] { "Java Server Pages" }), new Disambiguation("OPEN.xtrace",
                                 new String[] { "Open Execution Trace " + "Exchange" })) //
         ), //
         TEAMMATES_HISTORICAL( //
-                Project.TEAMMATES_HISTORICAL, //
+                HistoricProject.TEAMMATES_HISTORICAL, //
                 List.of(new Disambiguation("GAE", new String[] { "Google App Engine" }), new Disambiguation("JSP", new String[] { "Java Server Pages" }),
                         new Disambiguation("POJOs", new String[] { "Plain Old Java Objects" }), new Disambiguation("CRUD", new String[] {
                                 "Create Read Update Delete" })) //
         ), //
         BIGBLUEBUTTON_HISTORICAL( //
-                Project.BIGBLUEBUTTON_HISTORICAL, //
+                HistoricProject.BIGBLUEBUTTON_HISTORICAL, //
                 List.of(new Disambiguation("LMS", new String[] { "learning management system" })) //
         );
 
-        private final Project project;
+        private final GoldStandardProject project;
         private final ImmutableList<Disambiguation> disambiguations;
 
-        TextProject(Project project, List<Disambiguation> disambiguations) {
+        TextProject(GoldStandardProject project, List<Disambiguation> disambiguations) {
             this.project = project;
             this.disambiguations = Lists.immutable.ofAll(disambiguations);
         }

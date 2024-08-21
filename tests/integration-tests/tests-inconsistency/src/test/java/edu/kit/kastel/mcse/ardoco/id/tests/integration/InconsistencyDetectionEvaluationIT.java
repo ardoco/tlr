@@ -72,18 +72,9 @@ class InconsistencyDetectionEvaluationIT {
      */
     @DisplayName("Evaluating MME-Inconsistency Detection")
     @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
+    @EnumSource(Project.class)
     @Order(1)
     void missingModelElementInconsistencyIT(GoldStandardProject goldStandardProject) {
-        runMissingModelElementInconsistencyEval(goldStandardProject, goldStandardProject.getExpectedInconsistencyResults());
-    }
-
-    @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
-    @DisplayName("Evaluating MME-Inconsistency Detection (Historic)")
-    @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
-    @Order(2)
-    void missingModelElementInconsistencyHistoricIT(GoldStandardProject goldStandardProject) {
         runMissingModelElementInconsistencyEval(goldStandardProject, goldStandardProject.getExpectedInconsistencyResults());
     }
 
@@ -110,18 +101,9 @@ class InconsistencyDetectionEvaluationIT {
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
     @DisplayName("Evaluating MME-Inconsistency Detection Baseline")
     @ParameterizedTest(name = "Evaluating Baseline for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
+    @EnumSource(Project.class)
     @Order(5)
     void missingModelElementInconsistencyBaselineIT(GoldStandardProject goldStandardProject) {
-        runMissingModelElementInconsistencyBaselineEval(goldStandardProject);
-    }
-
-    @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
-    @DisplayName("Evaluating MME-Inconsistency Detection Baseline (Historical)")
-    @ParameterizedTest(name = "Evaluating Baseline for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
-    @Order(6)
-    void missingModelElementInconsistencyBaselineHistoricIT(GoldStandardProject goldStandardProject) {
         runMissingModelElementInconsistencyBaselineEval(goldStandardProject);
     }
 
@@ -150,18 +132,9 @@ class InconsistencyDetectionEvaluationIT {
      */
     @DisplayName("Evaluate Inconsistency Analyses For MissingTextForModelElementInconsistencies")
     @ParameterizedTest(name = "Evaluating UME-inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
+    @EnumSource(Project.class)
     @Order(10)
     void missingTextInconsistencyIT(GoldStandardProject goldStandardProject) {
-        runMissingTextInconsistencyEval(goldStandardProject);
-    }
-
-    @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
-    @DisplayName("Evaluate Inconsistency Analyses For MissingTextForModelElementInconsistencies " + "(Historical)")
-    @ParameterizedTest(name = "Evaluating UME-inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
-    @Order(11)
-    void missingTextInconsistencyHistoricIT(GoldStandardProject goldStandardProject) {
         runMissingTextInconsistencyEval(goldStandardProject);
     }
 
