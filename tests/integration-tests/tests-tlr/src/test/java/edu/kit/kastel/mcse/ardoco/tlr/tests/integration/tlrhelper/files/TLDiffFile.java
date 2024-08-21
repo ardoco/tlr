@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelSentenceLink;
+import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelElementSentenceLink;
 
 /**
  * This is a helper class to write out a diff-file for the evaluation results of TLR.
@@ -40,9 +40,9 @@ public class TLDiffFile {
      * @param dataMap           the mapping of Project to ArDoCoResult of the new run
      * @throws IOException if writing fails
      */
-    public static void save(Path targetFile, Collection<Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>>> newProjectResults,
-            Collection<Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>>> oldProjectResults, Map<GoldStandardProject, ArDoCoResult> dataMap)
-            throws IOException {
+    public static void save(Path targetFile, Collection<Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>>> newProjectResults,
+            Collection<Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>>> oldProjectResults,
+            Map<GoldStandardProject, ArDoCoResult> dataMap) throws IOException {
         // Assumption: Both collections contain the same projects
 
         newProjectResults = newProjectResults.stream().sorted(Comparator.comparing(x -> x.getOne().getProjectName())).toList();
@@ -71,7 +71,7 @@ public class TLDiffFile {
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         // Append project specific details
-        for (Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>> oldProjectResult : oldProjectResults) {
+        for (Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>> oldProjectResult : oldProjectResults) {
             var project = oldProjectResult.getOne();
             var newResultOptional = newProjectResults.stream().filter(r -> r.getOne().equals(project)).findAny();
             if (newResultOptional.isEmpty()) {
@@ -107,15 +107,15 @@ public class TLDiffFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    private static List<ModelSentenceLink> findNewLinks(List<ModelSentenceLink> oldLinks, List<ModelSentenceLink> newLinks) {
+    private static List<ModelElementSentenceLink> findNewLinks(List<ModelElementSentenceLink> oldLinks, List<ModelElementSentenceLink> newLinks) {
         return newLinks.stream().filter(link -> !oldLinks.contains(link)).toList();
     }
 
-    private static List<ModelSentenceLink> findMissingLinks(List<ModelSentenceLink> oldLinks, List<ModelSentenceLink> newLinks) {
+    private static List<ModelElementSentenceLink> findMissingLinks(List<ModelElementSentenceLink> oldLinks, List<ModelElementSentenceLink> newLinks) {
         return oldLinks.stream().filter(link -> !newLinks.contains(link)).toList();
     }
 
-    private static void appendList(StringBuilder builder, String description, List<ModelSentenceLink> links, ArDoCoResult arDoCoResult) {
+    private static void appendList(StringBuilder builder, String description, List<ModelElementSentenceLink> links, ArDoCoResult arDoCoResult) {
         var text = arDoCoResult.getText();
         if (links.isEmpty()) {
             return;
@@ -124,7 +124,7 @@ public class TLDiffFile {
         builder.append(description).append(":");
         builder.append(LINE_SEPARATOR);
 
-        for (ModelSentenceLink link : links) {
+        for (ModelElementSentenceLink link : links) {
             for (var modelId : arDoCoResult.getModelIds()) {
                 var dataModel = arDoCoResult.getModelState(modelId);
                 var line = TLSummaryFile.format(link, text, dataModel);

@@ -8,15 +8,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 /**
  * Represents a simple trace link by the id of the model and number of the sentence involved.
  */
-public record ModelSentenceLink(String modelId, int sentenceNr) implements Comparable<ModelSentenceLink> {
+public record ModelElementSentenceLink(String modelElementId, int sentenceNr) implements Comparable<ModelElementSentenceLink> {
 
-    public ModelSentenceLink(SadSamTraceLink traceLink) {
+    public ModelElementSentenceLink(SadSamTraceLink traceLink) {
         this(traceLink.getModelElementUid(), traceLink.getSentenceNumber());
     }
 
     @Override
-    public int compareTo(ModelSentenceLink o) {
-        return Comparator.comparing(ModelSentenceLink::modelId).thenComparing(ModelSentenceLink::sentenceNr).compare(this, o);
+    public int compareTo(ModelElementSentenceLink o) {
+        return Comparator.comparing(ModelElementSentenceLink::modelElementId).thenComparing(ModelElementSentenceLink::sentenceNr).compare(this, o);
     }
 
 }

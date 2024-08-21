@@ -15,7 +15,7 @@ import org.eclipse.collections.api.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelSentenceLink;
+import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelElementSentenceLink;
 
 /**
  * This helper-class offer functionality to write out a log of the results for TLR.
@@ -35,8 +35,8 @@ public class TLLogFile {
      * @param projectResults the results to write out
      * @throws IOException if writing to file system fails
      */
-    public static void append(Path targetFile, List<Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>>> projectResults) throws IOException {
-        List<EvaluationResults<ModelSentenceLink>> results = projectResults.stream().map(Pair::getTwo).toList();
+    public static void append(Path targetFile, List<Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>>> projectResults) throws IOException {
+        List<EvaluationResults<ModelElementSentenceLink>> results = projectResults.stream().map(Pair::getTwo).toList();
         var builder = new StringBuilder();
 
         builder.append("- `").append(CommonUtilities.getCurrentTimeAsString()).append("` ");
@@ -50,9 +50,9 @@ public class TLLogFile {
 
         var sortedResults = new ArrayList<>(projectResults);
         sortedResults.sort(Comparator.comparing(x -> x.getOne().getProjectName()));
-        for (Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>> projectResult : sortedResults) {
+        for (Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>> projectResult : sortedResults) {
             String alias = projectResult.getOne().getAlias();
-            EvaluationResults<ModelSentenceLink> result = projectResult.getTwo();
+            EvaluationResults<ModelElementSentenceLink> result = projectResult.getTwo();
             String precision = NUMBER_FORMAT.format(result.precision());
             String recall = NUMBER_FORMAT.format(result.recall());
             String F1 = NUMBER_FORMAT.format(result.f1());

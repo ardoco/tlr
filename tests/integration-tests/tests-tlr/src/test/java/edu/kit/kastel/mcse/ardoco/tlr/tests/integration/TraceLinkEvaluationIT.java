@@ -34,7 +34,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelSentenceLink;
+import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelElementSentenceLink;
 import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.files.TLDiffFile;
 import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.files.TLLogFile;
 import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.files.TLModelFile;
@@ -52,7 +52,7 @@ class TraceLinkEvaluationIT<T extends GoldStandardProject> {
     protected static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
     protected static AtomicBoolean analyzeCodeDirectly = ANALYZE_CODE_DIRECTLY;
 
-    protected static final List<Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>>> RESULTS = new ArrayList<>();
+    protected static final List<Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>>> RESULTS = new ArrayList<>();
     protected static final Map<GoldStandardProject, ArDoCoResult> DATA_MAP = new LinkedHashMap<>();
 
     @BeforeAll
