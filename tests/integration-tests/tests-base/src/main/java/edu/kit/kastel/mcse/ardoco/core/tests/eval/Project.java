@@ -33,7 +33,7 @@ public enum Project implements GoldStandardProject {
             "/configurations/ms/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "/benchmark/mediastore/goldstandards/goldstandard_sad_2016-sam_2016_UME.csv", //
             new ExpectedResults(.999, .620, .765, .978, .778, .999), //
-            new ExpectedResults(.212, .792, .328, .702, .227, .690) //
+            new ExpectedResults(.127, .793, .220, .685, .227, .679) //
     ), //
     TEASTORE( //
             "TS", //
@@ -43,7 +43,7 @@ public enum Project implements GoldStandardProject {
             "/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "/benchmark/teastore/goldstandards/goldstandard_sad_2020-sam_2020_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
-            new ExpectedResults(.962, .703, .784, .957, .808, .994) //
+            new ExpectedResults(.950, .703, .808, .980, .808, .998) //
     ), //
     TEASTORE_HISTORICAL( //
             "TS-H", //
@@ -53,7 +53,7 @@ public enum Project implements GoldStandardProject {
             "/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
-            new ExpectedResults(.163, .982, .278, .376, .146, .289) //
+            new ExpectedResults(.082, .983, .153, .332, .147, .291) //
     ), //
     TEAMMATES( //
             "TM", //
@@ -63,7 +63,7 @@ public enum Project implements GoldStandardProject {
             "/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "/benchmark/teammates/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
             new ExpectedResults(.555, .882, .681, .965, .688, .975), //
-            new ExpectedResults(.175, .745, .279, .851, .287, .851) //
+            new ExpectedResults(.147, .745, .245, .852, .287, .856) //
     ), //
     TEAMMATES_HISTORICAL( //
             "TM-H", //
@@ -73,7 +73,7 @@ public enum Project implements GoldStandardProject {
             "/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "/benchmark/teammates/goldstandards/goldstandard_sad_2015-sam_2021_UME.csv", //
             new ExpectedResults(.524, .695, .597, .970, .589, .979), //
-            new ExpectedResults(.168, .629, .263, .863, .260, .870) //
+            new ExpectedResults(.161, .695, .262, .878, .295, .884) //
     ), //
     BIGBLUEBUTTON( //
             "BBB", "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
@@ -82,7 +82,7 @@ public enum Project implements GoldStandardProject {
             "/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
             new ExpectedResults(.875, .826, .850, .985, .835, .985), //
-            new ExpectedResults(.887, .461, .429, .956, .534, .984) //
+            new ExpectedResults(.666, .461, .545, .960, .535, .988) //
     ), //
     BIGBLUEBUTTON_HISTORICAL( //
             "BBB-H", "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
@@ -91,7 +91,7 @@ public enum Project implements GoldStandardProject {
             "/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2015-sam_2021_UME.csv", //
             new ExpectedResults(.807, .617, .699, .978, .695, .993), //
-            new ExpectedResults(.085, .175, .111, .813, .018, .869) //
+            new ExpectedResults(.048, .176, .076, .829, .018, .857) //
     ), //
     JABREF( //
             "JR", "/benchmark/jabref/model_2021/pcm/jabref.repository", //
@@ -100,7 +100,7 @@ public enum Project implements GoldStandardProject {
             "/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "/benchmark/jabref/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
             new ExpectedResults(.899, .999, .946, .973, .932, .966), //
-            new ExpectedResults(1.0, .443, .443, .845, .616, 1.0) //
+            new ExpectedResults(1.0, .444, .615, .871, .617, 1.0) //
     ), //
     JABREF_HISTORICAL( //
             "JR-H", "/benchmark/jabref/model_2021/pcm/jabref.repository", //
@@ -109,7 +109,7 @@ public enum Project implements GoldStandardProject {
             "/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
             "/benchmark/jabref/goldstandards/goldstandard_sad_2016-sam_2021_UME.csv", //
             new ExpectedResults(.817, .999, .899, .966, .886, .960), //
-            new ExpectedResults(.110, .110, .110, .366, -.249, .475) //
+            new ExpectedResults(.083, .111, .095, .683, -0.094, .784) //
     );
 
     private static final Logger logger = LoggerFactory.getLogger(Project.class);
