@@ -24,7 +24,7 @@ public final class ResultCalculatorUtil {
         throw new IllegalAccessError();
     }
 
-    public static <T> EvaluationResults<T> calculateAverageResults(ImmutableList<EvaluationResults<T>> results) {
+    public static <T> EvaluationResults<T> calculateMacroAverageResults(ImmutableList<EvaluationResults<T>> results) {
         var averages = getAverages(results);
         if (averages == null)
             return null;

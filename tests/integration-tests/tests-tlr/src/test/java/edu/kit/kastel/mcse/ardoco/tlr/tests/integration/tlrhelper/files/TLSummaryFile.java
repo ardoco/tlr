@@ -21,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
-import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.TestLink;
+import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelSentenceLink;
 
 /**
  * This helper class offers functionality to write out a summary of the TLR evaluation runs for all projects.
@@ -42,7 +42,7 @@ public class TLSummaryFile {
      * @param dataMap    the outcomes (data) of the runs
      * @throws IOException if writing to file system fails
      */
-    public static void save(Path targetFile, Collection<Pair<GoldStandardProject, EvaluationResults<TestLink>>> results,
+    public static void save(Path targetFile, Collection<Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>>> results,
             Map<GoldStandardProject, ArDoCoResult> dataMap) throws IOException {
         var sortedResults = results.stream().sorted().toList();
         var builder = new StringBuilder();
@@ -61,7 +61,7 @@ public class TLSummaryFile {
     }
 
     private static void appendProjectResultSummary(Map<GoldStandardProject, ArDoCoResult> dataMap, StringBuilder builder,
-            Pair<GoldStandardProject, EvaluationResults<TestLink>> projectResult) {
+            Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>> projectResult) {
         var data = dataMap.get(projectResult.getOne());
         var text = data.getText();
 
@@ -99,18 +99,18 @@ public class TLSummaryFile {
     private static <T> void appendOverallResults(List<Pair<GoldStandardProject, EvaluationResults<T>>> projectResults, StringBuilder builder) {
         var results = Lists.mutable.ofAll(projectResults.stream().map(Pair::getTwo).toList());
         var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
-        var macroResults = ResultCalculatorUtil.calculateAverageResults(results.toImmutable());
+        var macroResults = ResultCalculatorUtil.calculateMacroAverageResults(results.toImmutable());
         var resultString = TestUtil.createResultLogString("Overall Weighted", weightedResults);
         builder.append(resultString).append(LINE_SEPARATOR);
         resultString = TestUtil.createResultLogString("Overall Macro", macroResults);
         builder.append(resultString).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
     }
 
-    private static String createFalseLinksOutput(String type, List<TestLink> falseLinks, ArDoCoResult data, Text text) {
+    private static String createFalseLinksOutput(String type, List<ModelSentenceLink> falseLinks, ArDoCoResult data, Text text) {
         var builder = new StringBuilder();
         builder.append(type).append(":").append(LINE_SEPARATOR);
 
-        for (TestLink falseLink : falseLinks) {
+        for (ModelSentenceLink falseLink : falseLinks) {
             builder.append(createFalseLinkOutput(data, text, falseLink));
         }
 
@@ -118,7 +118,7 @@ public class TLSummaryFile {
         return builder.toString();
     }
 
-    private static String createFalseLinkOutput(ArDoCoResult data, Text text, TestLink falseLink) {
+    private static String createFalseLinkOutput(ArDoCoResult data, Text text, ModelSentenceLink falseLink) {
         var builder = new StringBuilder();
         for (var modelId : data.getModelIds()) {
             var dataModel = data.getModelState(modelId);
@@ -130,7 +130,7 @@ public class TLSummaryFile {
         return builder.toString();
     }
 
-    static String format(TestLink link, Text text, LegacyModelExtractionState modelState) {
+    static String format(ModelSentenceLink link, Text text, LegacyModelExtractionState modelState) {
         var model = modelState.getInstances().stream().filter(m -> m.getUid().equals(link.modelId())).findAny().orElse(null);
         var sentence = text.getSentences().stream().filter(s -> s.getSentenceNumber() == link.sentenceNr()).findAny().orElse(null);
 
