@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.tlr.tests.integration;
 
 import static edu.kit.kastel.mcse.ardoco.tlr.tests.integration.TraceLinkEvaluationIT.DATA_MAP;
 import static edu.kit.kastel.mcse.ardoco.tlr.tests.integration.TraceLinkEvaluationIT.OUTPUT;
-import static edu.kit.kastel.mcse.ardoco.tlr.tests.integration.TraceLinkEvaluationIT.PROJECT_RESULTS;
 import static edu.kit.kastel.mcse.ardoco.tlr.tests.integration.TraceLinkEvaluationIT.RESULTS;
 
 import java.io.File;
@@ -12,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -104,13 +102,6 @@ public class SadSamTraceabilityLinkRecoveryEvaluation<T extends GoldStandardProj
         return sentences * modelElements;
     }
 
-    @Override
-    protected EvaluationResults<String> calculateEvaluationResults(ArDoCoResult arDoCoResult, ImmutableCollection<String> goldStandard) {
-        var results = super.calculateEvaluationResults(arDoCoResult, goldStandard);
-        PROJECT_RESULTS.add(results);
-        return results;
-    }
-
     public ArDoCoResult getArDoCoResult(T project) {
         String name = project.getProjectName();
         var inputModel = project.getModelFile();
@@ -169,7 +160,6 @@ public class SadSamTraceabilityLinkRecoveryEvaluation<T extends GoldStandardProj
                 RESULTS.add(Tuples.pair(project, TestUtil.compareTLR(DATA_MAP.get(project), TLRUtil.getTraceLinks(data), TLGoldStandardFile.loadLinks(project)
                         .toImmutable())));
                 DATA_MAP.put(project, arDoCoResult);
-                PROJECT_RESULTS.add(results);
             } catch (IOException e) {
                 // failing to save project results is irrelevant for test success
                 logger.warn("Failed to load file for gold standard", e);

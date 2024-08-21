@@ -10,7 +10,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
-import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.TestLink;
+import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelSentenceLink;
 
 public class TLGoldStandardFile {
 
@@ -19,15 +19,15 @@ public class TLGoldStandardFile {
         throw new IllegalAccessError("No instantiation allowed");
     }
 
-    public static MutableList<TestLink> loadLinks(GoldStandardProject goldStandardProject) throws IOException {
+    public static MutableList<ModelSentenceLink> loadLinks(GoldStandardProject goldStandardProject) throws IOException {
         Path path = goldStandardProject.getTlrGoldStandardFile().toPath();
         List<String> lines = Files.readAllLines(path);
 
         return Lists.mutable.ofAll(lines.stream()
                 .skip(1) // skip csv header
                 .map(line -> line.split(",")) // modelElementId,sentenceNr
-                .map(array -> new TestLink(array[0], Integer.parseInt(array[1])))
-                .map(link -> new TestLink(link.modelId(), link.sentenceNr() - 1))
+                .map(array -> new ModelSentenceLink(array[0], Integer.parseInt(array[1])))
+                .map(link -> new ModelSentenceLink(link.modelId(), link.sentenceNr() - 1))
                 // ^ goldstandard sentences start with 1 while ISentences are zero indexed
                 .toList());
     }
