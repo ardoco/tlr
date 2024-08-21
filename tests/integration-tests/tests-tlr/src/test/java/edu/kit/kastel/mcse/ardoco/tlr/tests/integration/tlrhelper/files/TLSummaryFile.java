@@ -10,17 +10,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.tuple.Pair;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelElementSentenceLink;
 
 /**
@@ -49,8 +46,6 @@ public class TLSummaryFile {
 
         builder.append("Time of evaluation: `").append(CommonUtilities.getCurrentTimeAsString()).append("`");
         builder.append(LINE_SEPARATOR);
-
-        appendOverallResults(sortedResults, builder);
 
         for (var result : sortedResults) {
             appendProjectResultSummary(dataMap, builder, result);
@@ -94,16 +89,6 @@ public class TLSummaryFile {
             var falseNegativesOutput = createFalseLinksOutput("False Negatives", falseNegatives, data, text);
             builder.append(falseNegativesOutput);
         }
-    }
-
-    private static <T> void appendOverallResults(List<Pair<GoldStandardProject, EvaluationResults<T>>> projectResults, StringBuilder builder) {
-        var results = Lists.mutable.ofAll(projectResults.stream().map(Pair::getTwo).toList());
-        var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
-        var macroResults = ResultCalculatorUtil.calculateMacroAverageResults(results.toImmutable());
-        var resultString = TestUtil.createResultLogString("Overall Weighted", weightedResults);
-        builder.append(resultString).append(LINE_SEPARATOR);
-        resultString = TestUtil.createResultLogString("Overall Macro", macroResults);
-        builder.append(resultString).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
     }
 
     private static String createFalseLinksOutput(String type, List<ModelElementSentenceLink> falseLinks, ArDoCoResult data, Text text) {

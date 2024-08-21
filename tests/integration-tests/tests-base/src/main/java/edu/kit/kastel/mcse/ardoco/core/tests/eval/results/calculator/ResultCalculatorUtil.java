@@ -61,8 +61,7 @@ public final class ResultCalculatorUtil {
 
     private static <T> List<AggregatedClassificationResult> getAverages(ImmutableList<EvaluationResults<T>> results) {
         if (results.isEmpty()) {
-            logger.warn("No results to calculate average from");
-            return null;
+            throw new IllegalArgumentException("No results to calculate average from");
         }
 
         var calculator = ClassificationMetricsCalculator.getInstance();
