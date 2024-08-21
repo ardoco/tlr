@@ -22,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelSentenceLink;
+import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelElementSentenceLink;
 
 /**
  * This is a helper class to load and write out the results of the previous evaluation run for TLR results.
@@ -41,11 +41,11 @@ public class TLPreviousFile {
      * @return the previous results
      * @throws IOException if file access fails
      */
-    public static Collection<Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>>> load(Path sourceFile,
+    public static Collection<Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>>> load(Path sourceFile,
             final Map<GoldStandardProject, ArDoCoResult> DATA_MAP) throws IOException {
         List<String> lines = Files.readAllLines(sourceFile);
-        Map<Project, List<ModelSentenceLink>> foundLinkMap = new LinkedHashMap<>();
-        List<Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>>> results = new ArrayList<>();
+        Map<Project, List<ModelElementSentenceLink>> foundLinkMap = new LinkedHashMap<>();
+        List<Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>>> results = new ArrayList<>();
 
         for (String line : lines) {
             var parts = line.split(",", -1);
@@ -53,7 +53,7 @@ public class TLPreviousFile {
             String modelId = parts[1];
             int sentenceNr = Integer.parseInt(parts[2]);
 
-            var testLink = new ModelSentenceLink(modelId, sentenceNr);
+            var testLink = new ModelElementSentenceLink(modelId, sentenceNr);
 
             if (!foundLinkMap.containsKey(project)) {
                 foundLinkMap.put(project, new ArrayList<>());
@@ -82,7 +82,7 @@ public class TLPreviousFile {
      * @param projectResults results to save
      * @throws IOException if writing to file system fails
      */
-    public static void save(Path targetFile, Collection<Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>>> projectResults, Logger logger)
+    public static void save(Path targetFile, Collection<Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>>> projectResults, Logger logger)
             throws IOException {
         if (Files.exists(targetFile)) {
             logger.warn("File with the results of the previous evaluation run already exists.");
@@ -94,12 +94,12 @@ public class TLPreviousFile {
 
         var builder = new StringBuilder();
 
-        for (Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>> projectResult : sortedResults) {
-            EvaluationResults<ModelSentenceLink> result = projectResult.getTwo();
-            for (ModelSentenceLink foundLink : result.getFound()) {
+        for (Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>> projectResult : sortedResults) {
+            EvaluationResults<ModelElementSentenceLink> result = projectResult.getTwo();
+            for (ModelElementSentenceLink foundLink : result.getFound()) {
                 builder.append(projectResult.getOne().getProjectName());
                 builder.append(',');
-                builder.append(foundLink.modelId());
+                builder.append(foundLink.modelElementId());
                 builder.append(',');
                 builder.append(foundLink.sentenceNr());
                 builder.append(LINE_SEPARATOR);

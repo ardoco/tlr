@@ -21,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
-import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelSentenceLink;
+import edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper.ModelElementSentenceLink;
 
 /**
  * This helper class offers functionality to write out a summary of the TLR evaluation runs for all projects.
@@ -42,7 +42,7 @@ public class TLSummaryFile {
      * @param dataMap    the outcomes (data) of the runs
      * @throws IOException if writing to file system fails
      */
-    public static void save(Path targetFile, Collection<Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>>> results,
+    public static void save(Path targetFile, Collection<Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>>> results,
             Map<GoldStandardProject, ArDoCoResult> dataMap) throws IOException {
         var sortedResults = results.stream().sorted().toList();
         var builder = new StringBuilder();
@@ -61,7 +61,7 @@ public class TLSummaryFile {
     }
 
     private static void appendProjectResultSummary(Map<GoldStandardProject, ArDoCoResult> dataMap, StringBuilder builder,
-            Pair<GoldStandardProject, EvaluationResults<ModelSentenceLink>> projectResult) {
+            Pair<GoldStandardProject, EvaluationResults<ModelElementSentenceLink>> projectResult) {
         var data = dataMap.get(projectResult.getOne());
         var text = data.getText();
 
@@ -106,11 +106,11 @@ public class TLSummaryFile {
         builder.append(resultString).append(LINE_SEPARATOR).append(LINE_SEPARATOR);
     }
 
-    private static String createFalseLinksOutput(String type, List<ModelSentenceLink> falseLinks, ArDoCoResult data, Text text) {
+    private static String createFalseLinksOutput(String type, List<ModelElementSentenceLink> falseLinks, ArDoCoResult data, Text text) {
         var builder = new StringBuilder();
         builder.append(type).append(":").append(LINE_SEPARATOR);
 
-        for (ModelSentenceLink falseLink : falseLinks) {
+        for (ModelElementSentenceLink falseLink : falseLinks) {
             builder.append(createFalseLinkOutput(data, text, falseLink));
         }
 
@@ -118,7 +118,7 @@ public class TLSummaryFile {
         return builder.toString();
     }
 
-    private static String createFalseLinkOutput(ArDoCoResult data, Text text, ModelSentenceLink falseLink) {
+    private static String createFalseLinkOutput(ArDoCoResult data, Text text, ModelElementSentenceLink falseLink) {
         var builder = new StringBuilder();
         for (var modelId : data.getModelIds()) {
             var dataModel = data.getModelState(modelId);
@@ -130,18 +130,18 @@ public class TLSummaryFile {
         return builder.toString();
     }
 
-    static String format(ModelSentenceLink link, Text text, LegacyModelExtractionState modelState) {
-        var model = modelState.getInstances().stream().filter(m -> m.getUid().equals(link.modelId())).findAny().orElse(null);
+    static String format(ModelElementSentenceLink link, Text text, LegacyModelExtractionState modelState) {
+        var model = modelState.getInstances().stream().filter(m -> m.getUid().equals(link.modelElementId())).findAny().orElse(null);
         var sentence = text.getSentences().stream().filter(s -> s.getSentenceNumber() == link.sentenceNr()).findAny().orElse(null);
 
         if (model == null && sentence == null) {
             return null;
         }
 
-        var modelStr = model == null ? link.modelId() : "\"" + model.getFullName() + "\"";
+        var modelStr = model == null ? link.modelElementId() : "\"" + model.getFullName() + "\"";
         var sentenceStr = sentence == null ? String.valueOf(link.sentenceNr()) : "\"" + sentence.getText() + "\"";
 
-        return String.format("%s ⇔ %s [%s,%s]", modelStr, sentenceStr, link.modelId(), link.sentenceNr());
+        return String.format("%s ⇔ %s [%s,%s]", modelStr, sentenceStr, link.modelElementId(), link.sentenceNr());
     }
 
 }
