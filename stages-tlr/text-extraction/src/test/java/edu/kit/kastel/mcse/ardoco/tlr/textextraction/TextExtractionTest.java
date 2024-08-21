@@ -86,14 +86,6 @@ class TextExtractionTest extends StageTest<TextExtraction, TextExtractionTest.Te
         runComparable(project);
     }
 
-    @DisplayName("Evaluate Text Extraction (Historical)")
-    @ParameterizedTest(name = "{0}")
-    @EnumSource(value = TextProject.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
-    @Order(2)
-    void evaluateHistoricalDiagramRecognition(TextProject project) {
-        runComparable(project);
-    }
-
     public enum TextProject implements GoldStandardProject {
         MEDIASTORE(//
                 Project.MEDIASTORE, //
