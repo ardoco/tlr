@@ -79,8 +79,8 @@ public record EvaluationResults<T>(SingleClassificationResult<T> classificationR
 
     public ImmutableList<T> getFound() {
         MutableList<T> found = Lists.mutable.empty();
-        found.addAll(classificationResult.getTp());
-        found.addAll(classificationResult.getFp());
+        found.addAll(classificationResult.getTruePositives());
+        found.addAll(classificationResult.getFalsePositives());
         return found.toImmutable();
     }
 
@@ -117,18 +117,18 @@ public record EvaluationResults<T>(SingleClassificationResult<T> classificationR
     }
 
     public List<T> truePositives() {
-        return classificationResult.getTp().stream().toList();
+        return classificationResult.getTruePositives().stream().toList();
     }
 
     public List<T> falsePositives() {
-        return classificationResult.getFp().stream().toList();
+        return classificationResult.getFalsePositives().stream().toList();
     }
 
     public List<T> falseNegatives() {
-        return classificationResult.getFn().stream().toList();
+        return classificationResult.getFalseNegatives().stream().toList();
     }
 
     public int trueNegatives() {
-        return classificationResult.getTn();
+        return classificationResult.getTrueNegatives();
     }
 }
