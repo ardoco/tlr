@@ -22,6 +22,7 @@ public record ArchitectureConfiguration(File architectureFile, ArchitectureModel
         return switch (type) {
         case PCM -> new PcmExtractor(architectureFile.getAbsolutePath());
         case UML -> new UmlExtractor(architectureFile.getAbsolutePath());
+        case RAW -> throw new IllegalArgumentException("Raw model is not supported for this project.");
         };
     }
 }
