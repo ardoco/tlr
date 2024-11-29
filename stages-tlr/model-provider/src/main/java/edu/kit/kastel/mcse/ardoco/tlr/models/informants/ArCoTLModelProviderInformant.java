@@ -24,7 +24,6 @@ public final class ArCoTLModelProviderInformant extends Informant {
     private final File fromFile;
 
     // Needed for Configuration Generation
-    @SuppressWarnings("unused")
     private ArCoTLModelProviderInformant() {
         super(null, null);
         this.extractor = null;
