@@ -18,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.common.util.PhraseMappingAggregatorStrategy;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.PhraseMappingAggregatorStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.tlr.text.providers.informants.corenlp.PhraseImpl;
