@@ -3,8 +3,8 @@ package edu.kit.kastel.mcse.ardoco.tlr.recommendationgenerator.informants;
 
 import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;

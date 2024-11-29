@@ -1,8 +1,6 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.tlr.tests.integration;
 
-import static edu.kit.kastel.mcse.ardoco.tlr.tests.integration.TraceLinkEvaluationIT.OUTPUT;
-
 import java.io.File;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -11,7 +9,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
@@ -43,9 +41,9 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
         String name = codeProject.name().toLowerCase();
         File textInput = codeProject.getTextFile();
         File inputArchitectureModel = codeProject.getModelFile();
-        File inputCode = getInputCode(codeProject, acmFile);
+        File inputCode = this.getInputCode(codeProject, this.acmFile);
         SortedMap<String, String> additionalConfigsMap = new TreeMap<>();
-        File outputDir = new File(OUTPUT);
+        File outputDir = new File(TraceLinkEvaluationIT.OUTPUT);
 
         var runner = new ArDoCoForSadSamCodeTraceabilityLinkRecovery(name);
         runner.setUp(textInput, inputArchitectureModel, ArchitectureModelType.PCM, inputCode, additionalConfigsMap, outputDir);
@@ -66,7 +64,7 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
 
     @Override
     protected ImmutableList<String> enrollGoldStandard(ImmutableList<String> goldStandard, ArDoCoResult result) {
-        return enrollGoldStandardForCode(goldStandard, result);
+        return TraceabilityLinkRecoveryEvaluation.enrollGoldStandardForCode(goldStandard, result);
     }
 
     @Override
@@ -82,7 +80,7 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
         int sentences = text.getSentences().size();
 
         ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(dataRepository);
-        Model codeModel = modelStatesData.getModel(CodeModelType.CODE_MODEL.getModelId());
+        Model codeModel = modelStatesData.getModel(Metamodel.CODE);
         var codeModelEndpoints = codeModel.getEndpoints().size();
 
         return sentences * codeModelEndpoints;

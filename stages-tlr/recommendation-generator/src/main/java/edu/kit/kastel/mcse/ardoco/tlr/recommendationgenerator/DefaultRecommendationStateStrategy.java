@@ -12,12 +12,12 @@ public class DefaultRecommendationStateStrategy implements RecommendationStateSt
     }
 
     @Override
-    public boolean areRITypesSimilar(String typeA, String typeB) {
+    public boolean areRecommendedInstanceTypesSimilar(String typeA, String typeB) {
         return globalConfiguration.getSimilarityUtils().areWordsSimilar(typeA, typeB);
     }
 
     @Override
-    public boolean areRINamesSimilar(String nameA, String nameB) {
+    public boolean areRecommendedInstanceNamesSimilar(String nameA, String nameB) {
         return globalConfiguration.getSimilarityUtils().areWordsSimilar(nameA, nameB);
     }
 }

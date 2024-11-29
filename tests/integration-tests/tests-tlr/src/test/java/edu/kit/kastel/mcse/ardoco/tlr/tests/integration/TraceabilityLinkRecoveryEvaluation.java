@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.RepositoryHandler;
@@ -44,20 +44,20 @@ public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardP
     protected static Map<GoldStandardProject, ArDoCoResult> resultMap = new LinkedHashMap<>();
 
     protected final ArDoCoResult runTraceLinkEvaluation(T project) {
-        ArDoCoResult result = resultMap.get(project);
-        if (result == null || !resultHasRequiredData(result)) {
-            ArDoCoRunner runner = getAndSetupRunner(project);
+        ArDoCoResult result = TraceabilityLinkRecoveryEvaluation.resultMap.get(project);
+        if (result == null || !this.resultHasRequiredData(result)) {
+            ArDoCoRunner runner = this.getAndSetupRunner(project);
             result = runner.run();
         }
         Assertions.assertNotNull(result);
 
-        var goldStandard = getGoldStandard(project);
-        goldStandard = enrollGoldStandard(goldStandard, result);
-        var evaluationResults = calculateEvaluationResults(result, goldStandard);
+        var goldStandard = this.getGoldStandard(project);
+        goldStandard = this.enrollGoldStandard(goldStandard, result);
+        var evaluationResults = this.calculateEvaluationResults(result, goldStandard);
 
-        ExpectedResults expectedResults = getExpectedResults(project);
-        TestUtil.logExtendedResultsWithExpected(logger, this, project.getProjectName(), evaluationResults, expectedResults);
-        compareResults(evaluationResults, expectedResults);
+        ExpectedResults expectedResults = this.getExpectedResults(project);
+        TestUtil.logExtendedResultsWithExpected(TraceabilityLinkRecoveryEvaluation.logger, this, project.getProjectName(), evaluationResults, expectedResults);
+        this.compareResults(evaluationResults, expectedResults);
         return result;
     }
 
@@ -66,7 +66,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardP
     protected File getInputCode(CodeProject codeProject, boolean acmFile) {
         File inputCode;
         if (!acmFile) {
-            prepareCode(codeProject);
+            this.prepareCode(codeProject);
             inputCode = codeProject.getCodeLocation(false);
         } else {
             inputCode = codeProject.getCodeLocation(true);
@@ -95,18 +95,18 @@ public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardP
 
         Model codeModel;
         try {
-            codeModel = DataRepositoryHelper.getModelStatesData(result.dataRepository()).getModel(CodeModelType.CODE_MODEL.getModelId());
+            codeModel = DataRepositoryHelper.getModelStatesData(result.dataRepository()).getModel(Metamodel.CODE);
             if (codeModel == null) {
-                logger.warn(WARNING_NO_CODE_MODEL);
+                TraceabilityLinkRecoveryEvaluation.logger.warn(TraceabilityLinkRecoveryEvaluation.WARNING_NO_CODE_MODEL);
                 return goldStandard;
             }
         } catch (NoSuchElementException e) {
-            logger.warn(WARNING_NO_CODE_MODEL);
+            TraceabilityLinkRecoveryEvaluation.logger.warn(TraceabilityLinkRecoveryEvaluation.WARNING_NO_CODE_MODEL);
             return goldStandard;
         }
 
         for (String traceLink : goldStandard) {
-            enrolledGoldStandard.addAll(enrollTraceLink(codeModel, traceLink));
+            enrolledGoldStandard.addAll(TraceabilityLinkRecoveryEvaluation.enrollTraceLink(codeModel, traceLink));
         }
 
         return enrolledGoldStandard.toImmutable();
@@ -119,7 +119,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardP
 
         var splitTraceLink = traceLink.split(",");
         var codeEntry = splitTraceLink[1].strip();
-        if (codeEntry.endsWith(GOLD_STANDARD_PATH_SEPARATOR)) {
+        if (codeEntry.endsWith(TraceabilityLinkRecoveryEvaluation.GOLD_STANDARD_PATH_SEPARATOR)) {
             for (var endpoint : codeModel.getEndpoints()) {
                 var endpointPath = endpoint.toString();
                 if (endpointPath.startsWith(codeEntry)) {
@@ -156,12 +156,12 @@ public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardP
      * @return the result of the comparison
      */
     protected EvaluationResults<String> calculateEvaluationResults(ArDoCoResult arDoCoResult, ImmutableCollection<String> goldStandard) {
-        ImmutableList<String> results = createTraceLinkStringList(arDoCoResult);
+        ImmutableList<String> results = this.createTraceLinkStringList(arDoCoResult);
         Assertions.assertFalse(results.isEmpty());
 
         Set<String> distinctTraceLinks = new LinkedHashSet<>(results.castToCollection());
         Set<String> distinctGoldStandard = new LinkedHashSet<>(goldStandard.castToCollection());
-        int confusionMatrixSum = getConfusionMatrixSum(arDoCoResult);
+        int confusionMatrixSum = this.getConfusionMatrixSum(arDoCoResult);
 
         var calculator = ClassificationMetricsCalculator.getInstance();
         var classification = calculator.calculateMetrics(distinctTraceLinks, distinctGoldStandard, confusionMatrixSum);

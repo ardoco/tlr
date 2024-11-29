@@ -7,9 +7,9 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.LegacyModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;

@@ -10,7 +10,6 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
@@ -31,17 +30,17 @@ public class HoldBackArCoTLModelProvider {
 
     public HoldBackArCoTLModelProvider(File inputArchitectureModel) {
         this.inputArchitectureModel = inputArchitectureModel;
-        var model = getExtractor().extractModel();
+        var model = this.getExtractor().extractModel();
         assert model instanceof ArchitectureModel;
-        initialModel = (ArchitectureModel) model;
-        components = Lists.immutable.fromStream(initialModel.getContent()
+        this.initialModel = (ArchitectureModel) model;
+        this.components = Lists.immutable.fromStream(this.initialModel.getContent()
                 .stream()
-                .filter(it -> it instanceof ArchitectureComponent)
+                .filter(ArchitectureComponent.class::isInstance)
                 .map(it -> (ArchitectureComponent) it));
     }
 
     private Extractor getExtractor() {
-        return new PcmExtractor(inputArchitectureModel.getAbsolutePath());
+        return new PcmExtractor(this.inputArchitectureModel.getAbsolutePath());
     }
 
     /**
@@ -59,7 +58,7 @@ public class HoldBackArCoTLModelProvider {
      * @return the number of actual instances (including all held back elements)
      */
     public int numberOfActualInstances() {
-        return components.size();
+        return this.components.size();
     }
 
     /**
@@ -67,19 +66,19 @@ public class HoldBackArCoTLModelProvider {
      *
      * @return the ModelInstance that is held back. If nothing is held back, returns null
      */
-    public ModelElement getCurrentHoldBack() {
-        if (currentHoldBackIndex < 0) {
+    public ArchitectureComponent getCurrentHoldBack() {
+        if (this.currentHoldBackIndex < 0) {
             return null;
         }
-        return components.get(currentHoldBackIndex);
+        return this.components.get(this.currentHoldBackIndex);
     }
 
     public PipelineAgent get(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         PipelineAgent agent = new PipelineAgent(List.of(new ArCoTLModelProviderInformant(dataRepository, new Extractor("") {
             @Override
             public Model extractModel() {
-                var elements = new ArrayList<>(initialModel.getContent());
-                var elementToRemove = getCurrentHoldBack();
+                var elements = new ArrayList<>(HoldBackArCoTLModelProvider.this.initialModel.getContent());
+                var elementToRemove = HoldBackArCoTLModelProvider.this.getCurrentHoldBack();
                 elements.remove(elementToRemove);
                 return new ArchitectureModel(elements);
             }
@@ -89,6 +88,9 @@ public class HoldBackArCoTLModelProvider {
                 return ArchitectureModelType.PCM;
             }
         })), ArCoTLModelProviderAgent.class.getSimpleName(), dataRepository) {
+
+            private static final long serialVersionUID = -816629373178698328L;
+
             @Override
             protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
                 // empty

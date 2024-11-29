@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.functi
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.NodeResult;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.computationtree.AggregationNode;

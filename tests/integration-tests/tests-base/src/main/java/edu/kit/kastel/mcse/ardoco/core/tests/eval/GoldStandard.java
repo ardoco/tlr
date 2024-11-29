@@ -12,8 +12,8 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 
 public class GoldStandard {
     private Logger logger = LoggerFactory.getLogger(GoldStandard.class);
@@ -21,16 +21,16 @@ public class GoldStandard {
     private File goldStandard;
     private ArchitectureModel model;
 
-    private MutableList<MutableList<ModelElement>> sentence2instance = Lists.mutable.empty();
+    private MutableList<MutableList<ArchitectureItem>> sentence2instance = Lists.mutable.empty();
 
     public GoldStandard(File goldStandard, ArchitectureModel model) {
         this.goldStandard = goldStandard;
         this.model = model;
-        load();
+        this.load();
     }
 
     private void load() {
-        try (Scanner scan = new Scanner(goldStandard, StandardCharsets.UTF_8)) {
+        try (Scanner scan = new Scanner(this.goldStandard, StandardCharsets.UTF_8)) {
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
                 if (line == null || line.isBlank() || line.startsWith("modelElement") || line.contains("modelElementID")) {
@@ -39,31 +39,31 @@ public class GoldStandard {
                 }
 
                 String[] idXline = line.strip().split(",", -1);
-                ModelElement instance = Lists.immutable.withAll(model.getContent()).select(i -> i.getId().equals(idXline[0])).getFirst();
+                ArchitectureItem instance = Lists.immutable.withAll(this.model.getContent()).select(i -> i.getId().equals(idXline[0])).getFirst();
                 if (instance == null) {
                     System.err.println("No instance found for id \"" + idXline[0] + "\"");
                     continue;
                 }
                 int sentence = Integer.parseInt(idXline[1]);
-                while (sentence2instance.size() <= sentence) {
-                    sentence2instance.add(Lists.mutable.empty());
+                while (this.sentence2instance.size() <= sentence) {
+                    this.sentence2instance.add(Lists.mutable.empty());
                 }
-                sentence2instance.get(sentence).add(instance);
+                this.sentence2instance.get(sentence).add(instance);
             }
         } catch (IOException e) {
-            logger.warn(e.getMessage(), e.getCause());
+            this.logger.warn(e.getMessage(), e.getCause());
         }
     }
 
-    public ImmutableList<ModelElement> getModelInstances(int sentenceNo) {
+    public ImmutableList<ArchitectureItem> getModelInstances(int sentenceNo) {
         // Index starts at 1
-        return sentence2instance.get(sentenceNo).toImmutable();
+        return this.sentence2instance.get(sentenceNo).toImmutable();
     }
 
-    public ImmutableList<Integer> getSentencesWithElement(ModelElement elem) {
+    public ImmutableList<Integer> getSentencesWithElement(ArchitectureItem elem) {
         MutableList<Integer> sentences = Lists.mutable.empty();
-        for (int i = 0; i < sentence2instance.size(); i++) {
-            var instances = sentence2instance.get(i);
+        for (int i = 0; i < this.sentence2instance.size(); i++) {
+            var instances = this.sentence2instance.get(i);
             if (instances.anySatisfy(e -> e.getId().equals(elem.getId()))) {
                 sentences.add(i);
             }

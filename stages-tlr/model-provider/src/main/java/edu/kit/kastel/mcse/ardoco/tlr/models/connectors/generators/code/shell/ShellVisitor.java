@@ -22,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguage;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguages;
 
 public class ShellVisitor implements FileVisitor<Path> {
     private static final Logger logger = LoggerFactory.getLogger(ShellVisitor.class);
@@ -87,7 +87,7 @@ public class ShellVisitor implements FileVisitor<Path> {
         for (int i = 0; i < relativePath.getNameCount() - 1; i++) {
             pathElements.add(relativePath.getName(i).toString());
         }
-        return new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new TreeSet<>(), pathElements, extension, ProgrammingLanguage.SHELL);
+        return new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new TreeSet<>(), pathElements, extension, ProgrammingLanguages.SHELL);
     }
 
     private static boolean isShellFile(String fileName, String code) {

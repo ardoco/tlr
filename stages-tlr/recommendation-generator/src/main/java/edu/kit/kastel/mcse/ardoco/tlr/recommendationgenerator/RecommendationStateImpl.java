@@ -98,7 +98,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
             var added = false;
 
             for (RecommendedInstance riWithExactName : risWithExactName) {
-                var areWordsSimilar = recommendationStateStrategy.areRITypesSimilar(riWithExactName.getType(), ri.getType());
+                var areWordsSimilar = recommendationStateStrategy.areRecommendedInstanceTypesSimilar(riWithExactName.getType(), ri.getType());
                 if (areWordsSimilar || recommendedInstancesHasEmptyType(ri, riWithExactName)) {
                     riWithExactName.addMappings(ri.getNameMappings(), ri.getTypeMappings());
                     added = true;
@@ -161,7 +161,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     public ImmutableList<RecommendedInstance> getRecommendedInstancesBySimilarName(String name) {
         MutableList<RecommendedInstance> ris = Lists.mutable.empty();
         for (RecommendedInstance ri : recommendedInstances) {
-            if (recommendationStateStrategy.areRINamesSimilar(ri.getName(), name)) {
+            if (recommendationStateStrategy.areRecommendedInstanceNamesSimilar(ri.getName(), name)) {
                 ris.add(ri);
             }
         }
@@ -188,6 +188,6 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
      */
     @Override
     public ImmutableList<RecommendedInstance> getRecommendedInstancesBySimilarType(String type) {
-        return recommendedInstances.select(ri -> recommendationStateStrategy.areRITypesSimilar(ri.getType(), type)).toImmutableList();
+        return recommendedInstances.select(ri -> recommendationStateStrategy.areRecommendedInstanceTypesSimilar(ri.getType(), type)).toImmutableList();
     }
 }

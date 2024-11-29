@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -47,23 +47,24 @@ public class HoldBackRunResultsProducer implements Serializable {
      * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced when running ArDoCo without the
      *         ModelElement
      */
-    public Map<ModelElement, ArDoCoResult> produceHoldBackRunResults(GoldStandardProject goldStandardProject, boolean useBaselineApproach) {
-        Map<ModelElement, ArDoCoResult> runs = new LinkedHashMap<>();
-        inputModel = goldStandardProject.getModelFile();
-        inputText = goldStandardProject.getTextFile();
-        additionalConfigs = goldStandardProject.getAdditionalConfigurations();
+    public Map<ArchitectureItem, ArDoCoResult> produceHoldBackRunResults(GoldStandardProject goldStandardProject, boolean useBaselineApproach) {
+        Map<ArchitectureItem, ArDoCoResult> runs = new LinkedHashMap<>();
+        this.inputModel = goldStandardProject.getModelFile();
+        this.inputText = goldStandardProject.getTextFile();
+        this.additionalConfigs = goldStandardProject.getAdditionalConfigurations();
 
-        HoldBackArCoTLModelProvider holdBackArCoTLModelProvider = new HoldBackArCoTLModelProvider(inputModel);
+        HoldBackArCoTLModelProvider holdBackArCoTLModelProvider = new HoldBackArCoTLModelProvider(this.inputModel);
 
-        var preRunDataRepository = runShared(goldStandardProject);
+        var preRunDataRepository = this.runShared(goldStandardProject);
 
-        var baseRunData = new ArDoCoResult(runUnshared(goldStandardProject, holdBackArCoTLModelProvider, preRunDataRepository.deepCopy(), useBaselineApproach));
+        var baseRunData = new ArDoCoResult(this.runUnshared(goldStandardProject, holdBackArCoTLModelProvider, preRunDataRepository.deepCopy(),
+                useBaselineApproach));
         runs.put(null, baseRunData);
 
         for (int i = 0; i < holdBackArCoTLModelProvider.numberOfActualInstances(); i++) {
             holdBackArCoTLModelProvider.setCurrentHoldBackIndex(i);
             var currentHoldBack = holdBackArCoTLModelProvider.getCurrentHoldBack();
-            var currentRunData = runUnshared(goldStandardProject, holdBackArCoTLModelProvider, preRunDataRepository.deepCopy(), useBaselineApproach);
+            var currentRunData = this.runUnshared(goldStandardProject, holdBackArCoTLModelProvider, preRunDataRepository.deepCopy(), useBaselineApproach);
             var result = new ArDoCoResult(currentRunData);
             runs.put(currentHoldBack, result);
         }
@@ -83,13 +84,13 @@ public class HoldBackRunResultsProducer implements Serializable {
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
-                var text = CommonUtilities.readInputText(inputText);
+                var text = CommonUtilities.readInputText(HoldBackRunResultsProducer.this.inputText);
                 if (text.isBlank()) {
                     throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an error reading the file.");
                 }
                 DataRepositoryHelper.putInputText(dataRepository, text);
-                pipelineSteps.add(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
-                pipelineSteps.add(TextExtraction.get(additionalConfigs, dataRepository));
+                pipelineSteps.add(TextPreprocessingAgent.get(HoldBackRunResultsProducer.this.additionalConfigs, dataRepository));
+                pipelineSteps.add(TextExtraction.get(HoldBackRunResultsProducer.this.additionalConfigs, dataRepository));
 
                 return pipelineSteps;
             }
@@ -112,14 +113,14 @@ public class HoldBackRunResultsProducer implements Serializable {
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
-                pipelineSteps.add(holdElementsBackModelConnector.get(additionalConfigs, dataRepository));
-                pipelineSteps.add(RecommendationGenerator.get(additionalConfigs, dataRepository));
-                pipelineSteps.add(ConnectionGenerator.get(additionalConfigs, dataRepository));
+                pipelineSteps.add(holdElementsBackModelConnector.get(HoldBackRunResultsProducer.this.additionalConfigs, dataRepository));
+                pipelineSteps.add(RecommendationGenerator.get(HoldBackRunResultsProducer.this.additionalConfigs, dataRepository));
+                pipelineSteps.add(ConnectionGenerator.get(HoldBackRunResultsProducer.this.additionalConfigs, dataRepository));
 
                 if (useInconsistencyBaseline) {
                     pipelineSteps.add(new InconsistencyBaseline(dataRepository));
                 } else {
-                    pipelineSteps.add(InconsistencyChecker.get(additionalConfigs, dataRepository));
+                    pipelineSteps.add(InconsistencyChecker.get(HoldBackRunResultsProducer.this.additionalConfigs, dataRepository));
                 }
 
                 return pipelineSteps;
