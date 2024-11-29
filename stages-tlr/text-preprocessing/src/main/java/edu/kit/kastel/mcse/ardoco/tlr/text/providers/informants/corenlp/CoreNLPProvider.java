@@ -15,41 +15,40 @@ public class CoreNLPProvider extends NlpInformant {
     private Text annotatedText;
 
     // Needed for Configuration Generation
-    @SuppressWarnings("unused")
     private CoreNLPProvider() {
         super(CoreNLPProvider.class.getSimpleName(), null);
     }
 
     public CoreNLPProvider(DataRepository data) {
         super(CoreNLPProvider.class.getSimpleName(), data);
-        annotatedText = null;
+        this.annotatedText = null;
     }
 
     @Override
     public void process() {
-        if (!DataRepositoryHelper.hasAnnotatedText(getDataRepository())) {
-            var preprocessingData = new PreprocessingData(getAnnotatedText());
-            DataRepositoryHelper.putPreprocessingData(getDataRepository(), preprocessingData);
+        if (!DataRepositoryHelper.hasAnnotatedText(this.getDataRepository())) {
+            var preprocessingData = new PreprocessingData(this.getAnnotatedText());
+            DataRepositoryHelper.putPreprocessingData(this.getDataRepository(), preprocessingData);
         }
     }
 
     @Override
     public Text getAnnotatedText(String textName) {
-        logger.warn("Returning annotated text ignoring the provided name");
-        return getAnnotatedText();
+        this.logger.warn("Returning annotated text ignoring the provided name");
+        return this.getAnnotatedText();
     }
 
     @Override
     public synchronized Text getAnnotatedText() {
-        if (annotatedText == null) {
-            if (DataRepositoryHelper.hasAnnotatedText(getDataRepository())) {
-                annotatedText = DataRepositoryHelper.getAnnotatedText(getDataRepository());
+        if (this.annotatedText == null) {
+            if (DataRepositoryHelper.hasAnnotatedText(this.getDataRepository())) {
+                this.annotatedText = DataRepositoryHelper.getAnnotatedText(this.getDataRepository());
             } else {
-                String text = DataRepositoryHelper.getInputText(getDataRepository());
-                annotatedText = processText(text);
+                String text = DataRepositoryHelper.getInputText(this.getDataRepository());
+                this.annotatedText = this.processText(text);
             }
         }
-        return annotatedText;
+        return this.annotatedText;
     }
 
     private Text processText(String inputText) {
