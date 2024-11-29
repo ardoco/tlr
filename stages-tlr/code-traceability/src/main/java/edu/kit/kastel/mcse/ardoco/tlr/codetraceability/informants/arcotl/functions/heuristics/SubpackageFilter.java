@@ -10,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.Architectu
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
 import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.NameComparisonUtils;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.Confidence;
 
@@ -18,7 +18,7 @@ public class SubpackageFilter extends DependentHeuristic {
 
     @Override
     protected Confidence calculateConfidence(ArchitectureComponent archComponent, CodeCompilationUnit compUnit) {
-        return calculateSubpackageFilter(archComponent, compUnit);
+        return this.calculateSubpackageFilter(archComponent, compUnit);
     }
 
     @Override
@@ -26,16 +26,16 @@ public class SubpackageFilter extends DependentHeuristic {
         if (!archInterface.getSignatures().isEmpty()) {
             return new Confidence();
         }
-        return calculateSubpackageFilter(archInterface, compUnit);
+        return this.calculateSubpackageFilter(archInterface, compUnit);
     }
 
     private Confidence calculateSubpackageFilter(ArchitectureItem archEndpoint, CodeCompilationUnit compUnit) {
-        EndpointTuple thisTuple = new EndpointTuple(archEndpoint, compUnit);
-        if (!getNodeResult().getConfidence(thisTuple).hasValue()) {
+        Pair<ArchitectureItem, CodeCompilationUnit> thisTuple = new Pair<>(archEndpoint, compUnit);
+        if (!this.getNodeResult().getConfidence(thisTuple).hasValue()) {
             return new Confidence();
         }
         List<CodePackage> thisPackages = NameComparisonUtils.getMatchedPackages(archEndpoint, compUnit);
-        SortedSet<Entity> linkedArchitectureEndpoints = getNodeResult().getLinkedEndpoints(compUnit);
+        SortedSet<Entity> linkedArchitectureEndpoints = this.getNodeResult().getLinkedEndpoints(compUnit);
         linkedArchitectureEndpoints.remove(archEndpoint);
         for (var linkedArchitectureEndpoint : linkedArchitectureEndpoints) {
             List<CodePackage> otherPackages = NameComparisonUtils.getMatchedPackages(linkedArchitectureEndpoint, compUnit);

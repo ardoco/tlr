@@ -6,6 +6,9 @@ import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 
 /**
  * A repository of endpoint tuples. An endpoint tuple consists of an
@@ -14,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
  */
 public class EndpointTupleRepo {
 
-    private List<SamCodeEndpointTuple> endpointTuples;
+    private List<Pair<ArchitectureItem, CodeCompilationUnit>> endpointTuples;
 
     /**
      * Creates a new repository of endpoint tuples. Contains every possible
@@ -27,10 +30,10 @@ public class EndpointTupleRepo {
      *                  repository
      */
     public EndpointTupleRepo(ArchitectureModel archModel, CodeModel codeModel) {
-        endpointTuples = new ArrayList<>();
+        this.endpointTuples = new ArrayList<>();
         for (var architectureEndpoint : archModel.getEndpoints()) {
             for (var codeEndpoint : codeModel.getEndpoints()) {
-                endpointTuples.add(new SamCodeEndpointTuple(architectureEndpoint, codeEndpoint));
+                this.endpointTuples.add(new Pair<>(architectureEndpoint, codeEndpoint));
             }
         }
     }
@@ -40,7 +43,7 @@ public class EndpointTupleRepo {
      *
      * @return all endpoint tuples
      */
-    public List<SamCodeEndpointTuple> getEndpointTuples() {
-        return new ArrayList<>(endpointTuples);
+    public List<Pair<ArchitectureItem, CodeCompilationUnit>> getEndpointTuples() {
+        return new ArrayList<>(this.endpointTuples);
     }
 }

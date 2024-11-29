@@ -1,9 +1,6 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.functions.heuristics;
 
-import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.Confidence;
-import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.EndpointTupleRepo;
-import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.NodeResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +10,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.Architectu
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.Confidence;
+import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.EndpointTupleRepo;
+import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.NodeResult;
 
 /**
  * A heuristic.
@@ -24,14 +24,14 @@ public abstract class Heuristic {
         NodeResult confidences = new NodeResult();
         EndpointTupleRepo endpointTupleRepo = new EndpointTupleRepo(archModel, codeModel);
         for (var endpointTuple : endpointTupleRepo.getEndpointTuples()) {
-            ArchitectureItem archEndpoint = endpointTuple.getArchitectureEndpoint();
-            CodeCompilationUnit compUnit = endpointTuple.getCodeEndpoint();
+            ArchitectureItem archEndpoint = endpointTuple.first();
+            CodeCompilationUnit compUnit = endpointTuple.second();
             Confidence confidence = new Confidence();
             if (archEndpoint instanceof ArchitectureInterface archInterface) {
-                confidence = calculateConfidence(archInterface, compUnit);
+                confidence = this.calculateConfidence(archInterface, compUnit);
             }
             if (archEndpoint instanceof ArchitectureComponent archComponent) {
-                confidence = calculateConfidence(archComponent, compUnit);
+                confidence = this.calculateConfidence(archComponent, compUnit);
             }
             confidences.add(endpointTuple, confidence);
         }
@@ -54,7 +54,7 @@ public abstract class Heuristic {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return this.getClass().hashCode();
     }
 
     @Override

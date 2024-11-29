@@ -8,14 +8,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.Architectu
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.Datatype;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.Confidence;
 
 public class InheritLinks extends DependentHeuristic {
 
     @Override
     protected Confidence calculateConfidence(ArchitectureComponent archComponent, CodeCompilationUnit compUnit) {
-        return inheritLinks(archComponent, compUnit);
+        return this.inheritLinks(archComponent, compUnit);
     }
 
     @Override
@@ -23,16 +23,16 @@ public class InheritLinks extends DependentHeuristic {
         if (!archInterface.getSignatures().isEmpty()) {
             return new Confidence();
         }
-        return inheritLinks(archInterface, compUnit);
+        return this.inheritLinks(archInterface, compUnit);
     }
 
     private Confidence inheritLinks(ArchitectureItem archEndpoint, CodeCompilationUnit compUnit) {
-        if (!getNodeResult().getLinkedEndpoints(compUnit).isEmpty()) {
+        if (!this.getNodeResult().getLinkedEndpoints(compUnit).isEmpty()) {
             return new Confidence();
         }
         Confidence maxConfidence = new Confidence();
         for (Datatype codeType : compUnit.getAllDataTypes()) {
-            Confidence extendedConfidence = inheritLinks(archEndpoint, codeType);
+            Confidence extendedConfidence = this.inheritLinks(archEndpoint, codeType);
             if (extendedConfidence.compareTo(maxConfidence) > 0) {
                 maxConfidence = extendedConfidence;
             }
@@ -49,7 +49,7 @@ public class InheritLinks extends DependentHeuristic {
             if (areInDifferentPackages(codeType.getCompilationUnit(), extendedType.getCompilationUnit())) {
                 continue;
             }
-            Confidence extendedConfidence = getNodeResult().getConfidence(new EndpointTuple(archEndpoint, extendedType.getCompilationUnit()));
+            Confidence extendedConfidence = this.getNodeResult().getConfidence(new Pair<>(archEndpoint, extendedType.getCompilationUnit()));
             if (extendedConfidence.compareTo(maxConfidence) > 0) {
                 maxConfidence = extendedConfidence;
             }

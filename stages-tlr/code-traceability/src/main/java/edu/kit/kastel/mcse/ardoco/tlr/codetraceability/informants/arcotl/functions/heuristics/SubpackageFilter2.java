@@ -8,14 +8,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.Architectu
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.Confidence;
 
 public class SubpackageFilter2 extends DependentHeuristic {
 
     @Override
     protected Confidence calculateConfidence(ArchitectureComponent archComponent, CodeCompilationUnit compUnit) {
-        return calculateSubpackageFilter(archComponent, compUnit);
+        return this.calculateSubpackageFilter(archComponent, compUnit);
     }
 
     @Override
@@ -23,16 +23,16 @@ public class SubpackageFilter2 extends DependentHeuristic {
         if (!archInterface.getSignatures().isEmpty()) {
             return new Confidence();
         }
-        return calculateSubpackageFilter(archInterface, compUnit);
+        return this.calculateSubpackageFilter(archInterface, compUnit);
     }
 
     private Confidence calculateSubpackageFilter(ArchitectureItem archEndpoint, CodeCompilationUnit compUnit) {
-        EndpointTuple thisTuple = new EndpointTuple(archEndpoint, compUnit);
-        if (!getNodeResult().getConfidence(thisTuple).hasValue()) {
+        Pair<ArchitectureItem, CodeCompilationUnit> thisTuple = new Pair<>(archEndpoint, compUnit);
+        if (!this.getNodeResult().getConfidence(thisTuple).hasValue()) {
             return new Confidence();
         }
         int i = 0;
-        SortedSet<Entity> linkedArchEndpoints = getNodeResult().getLinkedEndpoints(compUnit);
+        SortedSet<Entity> linkedArchEndpoints = this.getNodeResult().getLinkedEndpoints(compUnit);
         for (var linkedArchEndpoint : linkedArchEndpoints) {
             if (linkedArchEndpoint instanceof ArchitectureComponent) {
                 i++;

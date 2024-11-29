@@ -8,22 +8,22 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.Architectu
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.Confidence;
 
 public class Required extends DependentHeuristic {
 
     @Override
     protected Confidence calculateConfidence(ArchitectureComponent archComponent, CodeCompilationUnit compUnit) {
-        return calculateReq(archComponent, compUnit);
+        return this.calculateReq(archComponent, compUnit);
     }
 
     private Confidence calculateReq(ArchitectureComponent archEndpoint, CodeCompilationUnit compUnit) {
-        if (!getNodeResult().getConfidence(new EndpointTuple(archEndpoint, compUnit)).hasValue()) {
+        if (!this.getNodeResult().getConfidence(new Pair<>(archEndpoint, compUnit)).hasValue()) {
             return new Confidence();
         }
         SortedSet<ArchitectureComponent> allLinks = new TreeSet<>();
-        SortedSet<Entity> linkedEndpoints = getNodeResult().getLinkedEndpoints(compUnit);
+        SortedSet<Entity> linkedEndpoints = this.getNodeResult().getLinkedEndpoints(compUnit);
         for (Entity linkedEndpoint : linkedEndpoints) {
             if (linkedEndpoint instanceof ArchitectureComponent comp) {
                 allLinks.add(comp);
