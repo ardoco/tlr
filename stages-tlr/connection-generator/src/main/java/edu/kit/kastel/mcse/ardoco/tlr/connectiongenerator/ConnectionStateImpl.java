@@ -5,10 +5,10 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.connectiongenerator.InstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 

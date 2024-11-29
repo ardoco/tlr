@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper;
 import java.util.Comparator;
 
 import edu.kit.kastel.mcse.ardoco.core.api.entity.ArchitectureEntity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
+import edu.kit.kastel.mcse.ardoco.core.api.tracelink.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.common.Internal;
 
 /**

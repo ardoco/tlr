@@ -3,8 +3,8 @@ package edu.kit.kastel.mcse.ardoco.tlr.connectiongenerator.agents;
 
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.tlr.connectiongenerator.informants.ProjectNameInformant;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 

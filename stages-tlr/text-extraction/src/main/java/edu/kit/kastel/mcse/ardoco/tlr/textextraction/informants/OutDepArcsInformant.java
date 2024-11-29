@@ -3,10 +3,10 @@ package edu.kit.kastel.mcse.ardoco.tlr.textextraction.informants;
 
 import java.util.SortedMap;
 
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.WordHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;

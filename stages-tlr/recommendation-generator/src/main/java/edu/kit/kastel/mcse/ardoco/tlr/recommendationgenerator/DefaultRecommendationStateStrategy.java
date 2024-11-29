@@ -1,7 +1,7 @@
 /* Licensed under MIT 2024. */
 package edu.kit.kastel.mcse.ardoco.tlr.recommendationgenerator;
 
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStateStrategy;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendationStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 
 public class DefaultRecommendationStateStrategy implements RecommendationStateStrategy {

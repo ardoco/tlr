@@ -16,8 +16,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseAbbreviation;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.PhraseAbbreviation;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.WordAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
