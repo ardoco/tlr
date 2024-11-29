@@ -2,22 +2,17 @@
 package edu.kit.kastel.mcse.ardoco.tlr.recommendationgenerator;
 
 import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendationStateStrategy;
-import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
 
 public class DefaultRecommendationStateStrategy implements RecommendationStateStrategy {
-    private final GlobalConfiguration globalConfiguration;
-
-    public DefaultRecommendationStateStrategy(GlobalConfiguration globalConfiguration) {
-        this.globalConfiguration = globalConfiguration;
-    }
 
     @Override
     public boolean areRecommendedInstanceTypesSimilar(String typeA, String typeB) {
-        return globalConfiguration.getSimilarityUtils().areWordsSimilar(typeA, typeB);
+        return SimilarityUtils.getInstance().areWordsSimilar(typeA, typeB);
     }
 
     @Override
     public boolean areRecommendedInstanceNamesSimilar(String nameA, String nameB) {
-        return globalConfiguration.getSimilarityUtils().areWordsSimilar(nameA, nameB);
+        return SimilarityUtils.getInstance().areWordsSimilar(nameA, nameB);
     }
 }

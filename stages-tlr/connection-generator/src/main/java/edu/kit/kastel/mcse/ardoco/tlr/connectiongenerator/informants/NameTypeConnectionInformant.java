@@ -16,6 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
@@ -37,13 +38,13 @@ public class NameTypeConnectionInformant extends Informant {
 
     @Override
     public void process() {
-        DataRepository dataRepository = getDataRepository();
+        DataRepository dataRepository = this.getDataRepository();
         var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         for (var word : text.words()) {
-            exec(textState, modelStates, recommendationStates, word);
+            this.exec(textState, modelStates, recommendationStates, word);
         }
     }
 
@@ -51,10 +52,10 @@ public class NameTypeConnectionInformant extends Informant {
         for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
-            checkForNameAfterType(textState, word, modelState, recommendationState);
-            checkForNameBeforeType(textState, word, modelState, recommendationState);
-            checkForNortBeforeType(textState, word, modelState, recommendationState);
-            checkForNortAfterType(textState, word, modelState, recommendationState);
+            this.checkForNameAfterType(textState, word, modelState, recommendationState);
+            this.checkForNameBeforeType(textState, word, modelState, recommendationState);
+            this.checkForNortBeforeType(textState, word, modelState, recommendationState);
+            this.checkForNortAfterType(textState, word, modelState, recommendationState);
         }
     }
 
@@ -70,16 +71,16 @@ public class NameTypeConnectionInformant extends Informant {
 
         var preWord = word.getPreWord();
 
-        var similarTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
+        var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, this.probability);
 
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(preWord, MappingKind.NAME);
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
 
-            var instance = tryToIdentify(textExtractionState, similarTypes, preWord, modelState);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
+            var instance = this.tryToIdentify(textExtractionState, similarTypes, preWord, modelState);
+            this.addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
         }
     }
 
@@ -100,15 +101,15 @@ public class NameTypeConnectionInformant extends Informant {
 
         var after = word.getNextWord();
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, this.probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(after, MappingKind.NAME);
 
-            var instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
+            var instance = this.tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
+            this.addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nameMappings, typeMappings, recommendationState);
         }
     }
 
@@ -124,16 +125,16 @@ public class NameTypeConnectionInformant extends Informant {
 
         var preWord = word.getPreWord();
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, this.probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(preWord, MappingKind.NAME, MappingKind.TYPE);
 
-            var instance = tryToIdentify(textExtractionState, sameLemmaTypes, preWord, modelState);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
+            var instance = this.tryToIdentify(textExtractionState, sameLemmaTypes, preWord, modelState);
+            this.addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
         }
     }
 
@@ -149,15 +150,15 @@ public class NameTypeConnectionInformant extends Informant {
 
         var after = word.getNextWord();
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, this.probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(after, MappingKind.NAME, MappingKind.TYPE);
 
-            var instance = tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
-            addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
+            var instance = this.tryToIdentify(textExtractionState, sameLemmaTypes, after, modelState);
+            this.addRecommendedInstanceIfNodeNotNull(word, textExtractionState, instance, nortMappings, typeMappings, recommendationState);
         }
     }
 
@@ -179,7 +180,7 @@ public class NameTypeConnectionInformant extends Informant {
             for (NounMapping nmapping : nounMappingsByCurrentWord) {
                 var name = instance.getFullName();
                 var type = nmapping.getReference();
-                recommendationState.addRecommendedInstance(name, type, this, probability, nameMappings, typeMappings);
+                recommendationState.addRecommendedInstance(name, type, this, this.probability, nameMappings, typeMappings);
             }
         }
     }
@@ -204,8 +205,7 @@ public class NameTypeConnectionInformant extends Informant {
         }
 
         var text = word.getText();
-        matchingInstances = matchingInstances.select(i -> getMetaData().getSimilarityUtils()
-                .areWordsOfListsSimilar(i.getNameParts(), Lists.immutable.with(text)));
+        matchingInstances = matchingInstances.select(i -> SimilarityUtils.getInstance().areWordsOfListsSimilar(i.getNameParts(), Lists.immutable.with(text)));
 
         if (!matchingInstances.isEmpty()) {
             return matchingInstances.get(0);

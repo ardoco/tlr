@@ -35,14 +35,14 @@ public class NameTypeInformant extends Informant {
 
     @Override
     public void process() {
-        DataRepository dataRepository = getDataRepository();
+        DataRepository dataRepository = this.getDataRepository();
         var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var modelStatesData = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
 
         for (var word : text.words()) {
-            exec(textState, modelStatesData, recommendationStates, word);
+            this.exec(textState, modelStatesData, recommendationStates, word);
         }
     }
 
@@ -51,10 +51,10 @@ public class NameTypeInformant extends Informant {
             var modelState = modelStates.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
 
-            addRecommendedInstanceIfNameAfterType(textState, word, modelState, recommendationState);
-            addRecommendedInstanceIfNameBeforeType(textState, word, modelState, recommendationState);
-            addRecommendedInstanceIfNameOrTypeBeforeType(textState, word, modelState, recommendationState);
-            addRecommendedInstanceIfNameOrTypeAfterType(textState, word, modelState, recommendationState);
+            this.addRecommendedInstanceIfNameAfterType(textState, word, modelState, recommendationState);
+            this.addRecommendedInstanceIfNameBeforeType(textState, word, modelState, recommendationState);
+            this.addRecommendedInstanceIfNameOrTypeBeforeType(textState, word, modelState, recommendationState);
+            this.addRecommendedInstanceIfNameOrTypeAfterType(textState, word, modelState, recommendationState);
         }
     }
 
@@ -71,15 +71,15 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var similarTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
+        var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!similarTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, this.probability);
 
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getPreWord(), MappingKind.NAME);
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(similarTypes, nameMappings, typeMappings, recommendationState, this, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(similarTypes, nameMappings, typeMappings, recommendationState, this, this.probability);
         }
     }
 
@@ -96,14 +96,14 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, this.probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             var nameMappings = textExtractionState.getMappingsThatCouldBeOfKind(word.getNextWord(), MappingKind.NAME);
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nameMappings, typeMappings, recommendationState, this, this.probability);
         }
     }
 
@@ -120,15 +120,15 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, this.probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getPreWord(), MappingKind.NAME, MappingKind.TYPE);
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, this.probability);
         }
     }
 
@@ -145,14 +145,14 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
-            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
+            textExtractionState.addNounMapping(word, MappingKind.TYPE, this, this.probability);
 
             var typeMappings = textExtractionState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             var nortMappings = textExtractionState.getMappingsThatCouldBeMultipleKinds(word.getNextWord(), MappingKind.NAME, MappingKind.TYPE);
 
-            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, probability);
+            CommonUtilities.addRecommendedInstancesFromNounMappings(sameLemmaTypes, nortMappings, typeMappings, recommendationState, this, this.probability);
         }
     }
 

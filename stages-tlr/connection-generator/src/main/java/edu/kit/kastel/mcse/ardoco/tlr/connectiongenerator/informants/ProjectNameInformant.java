@@ -14,6 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.Recomme
 import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -41,7 +42,7 @@ public class ProjectNameInformant extends Informant {
 
     @Override
     public void process() {
-        DataRepository dataRepository = getDataRepository();
+        DataRepository dataRepository = this.getDataRepository();
         var projectName = DataRepositoryHelper.getProjectPipelineData(dataRepository).getProjectName();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
@@ -50,20 +51,20 @@ public class ProjectNameInformant extends Informant {
             Metamodel metamodel = modelState.getMetamodel();
             var recommendationState = recommendationStates.getRecommendationState(metamodel);
 
-            checkForProjectNameInRecommendedInstances(projectName, recommendationState);
-            checkForProjectNameInRecommendedInstances(projectName.toLowerCase(), recommendationState);
+            this.checkForProjectNameInRecommendedInstances(projectName, recommendationState);
+            this.checkForProjectNameInRecommendedInstances(projectName.toLowerCase(), recommendationState);
         }
     }
 
     private void checkForProjectNameInRecommendedInstances(String projectName, RecommendationState recommendationState) {
         for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
-            checkForProjectNameInNounMappingsOfRecommendedInstance(projectName, recommendedInstance);
+            this.checkForProjectNameInNounMappingsOfRecommendedInstance(projectName, recommendedInstance);
         }
     }
 
     private void checkForProjectNameInNounMappingsOfRecommendedInstance(String projectName, RecommendedInstance recommendedInstance) {
         for (var nm : recommendedInstance.getNameMappings()) {
-            checkWordsInNounMapping(projectName, recommendedInstance, nm);
+            this.checkWordsInNounMapping(projectName, recommendedInstance, nm);
         }
     }
 
@@ -71,10 +72,10 @@ public class ProjectNameInformant extends Informant {
         for (var word : nm.getWords()) {
             String wordText = word.getText().toLowerCase();
             if (projectName.contains(wordText)) {
-                var words = expandWordForName(projectName, word);
-                var expandedWord = concatenateWords(words);
-                if (getMetaData().getSimilarityUtils().areWordsSimilar(projectName, expandedWord)) {
-                    recommendedInstance.addProbability(this, penalty);
+                var words = this.expandWordForName(projectName, word);
+                var expandedWord = this.concatenateWords(words);
+                if (SimilarityUtils.getInstance().areWordsSimilar(projectName, expandedWord)) {
+                    recommendedInstance.addProbability(this, this.penalty);
                 }
             }
         }
@@ -93,8 +94,8 @@ public class ProjectNameInformant extends Informant {
         MutableList<Word> words = Lists.mutable.with(word);
         var editedProjectName = getEditedProjectName(projectName);
 
-        expandWordForNameLeft(editedProjectName, words);
-        expandWordForNameRight(editedProjectName, words);
+        this.expandWordForNameLeft(editedProjectName, words);
+        this.expandWordForNameRight(editedProjectName, words);
 
         return words.distinct().sortThisByInt(Word::getPosition);
     }
@@ -106,7 +107,7 @@ public class ProjectNameInformant extends Informant {
         }
 
         Word currWord = words.sortThisByInt(Word::getPosition).getFirstOptional().orElseThrow(IllegalArgumentException::new);
-        expandWordForName(name, currWord, words, Word::getPreWord, (text, addition) -> addition + text);
+        this.expandWordForName(name, currWord, words, Word::getPreWord, (text, addition) -> addition + text);
     }
 
     private void expandWordForNameRight(String name, MutableList<Word> words) {
@@ -116,7 +117,7 @@ public class ProjectNameInformant extends Informant {
         }
 
         var currWord = words.sortThisByInt(Word::getPosition).getLastOptional().orElseThrow(IllegalArgumentException::new);
-        expandWordForName(name, currWord, words, Word::getNextWord, (text, addition) -> text + addition);
+        this.expandWordForName(name, currWord, words, Word::getNextWord, (text, addition) -> text + addition);
     }
 
     private void expandWordForName(String name, Word currWord, MutableList<Word> words, UnaryOperator<Word> wordExpansion,
@@ -126,7 +127,7 @@ public class ProjectNameInformant extends Informant {
             throw new IllegalArgumentException(ERROR_EMPTY_LIST);
         }
 
-        var testWordText = concatenateWords(words);
+        var testWordText = this.concatenateWords(words);
         while (name.contains(testWordText)) {
             words.add(currWord);
 

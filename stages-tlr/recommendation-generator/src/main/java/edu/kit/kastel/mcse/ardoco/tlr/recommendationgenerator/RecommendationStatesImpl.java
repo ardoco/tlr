@@ -6,19 +6,18 @@ import java.util.EnumMap;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendationStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendationStates;
-import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 
 public class RecommendationStatesImpl implements RecommendationStates {
     private final EnumMap<Metamodel, RecommendationStateImpl> recommendationStates;
 
     private RecommendationStatesImpl() {
-        recommendationStates = new EnumMap<>(Metamodel.class);
+        this.recommendationStates = new EnumMap<>(Metamodel.class);
     }
 
-    public static RecommendationStates build(GlobalConfiguration globalConfiguration) {
+    public static RecommendationStates build() {
         var recStates = new RecommendationStatesImpl();
         for (Metamodel mm : Metamodel.values()) {
-            RecommendationStateStrategy rss = new DefaultRecommendationStateStrategy(globalConfiguration);
+            RecommendationStateStrategy rss = new DefaultRecommendationStateStrategy();
             recStates.recommendationStates.put(mm, new RecommendationStateImpl(rss));
         }
         return recStates;
@@ -26,6 +25,6 @@ public class RecommendationStatesImpl implements RecommendationStates {
 
     @Override
     public RecommendationStateImpl getRecommendationState(Metamodel mm) {
-        return recommendationStates.get(mm);
+        return this.recommendationStates.get(mm);
     }
 }

@@ -8,6 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.Leg
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -28,12 +29,12 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
 
     @Override
     public void process() {
-        DataRepository dataRepository = getDataRepository();
+        DataRepository dataRepository = this.getDataRepository();
         var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         for (var word : text.words()) {
-            exec(textState, modelStates, word);
+            this.exec(textState, modelStates, word);
         }
     }
 
@@ -41,8 +42,8 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
         for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelExtractionState(model);
 
-            searchForName(modelState, textState, word);
-            searchForType(modelState, textState, word);
+            this.searchForName(modelState, textState, word);
+            this.searchForType(modelState, textState, word);
         }
     }
 
@@ -51,12 +52,12 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
      * appears to be a name this is stored in the text extraction state.
      */
     private void searchForName(LegacyModelExtractionState modelState, TextState textState, Word word) {
-        if (posTagIsUndesired(word) && !wordStartsWithCapitalLetter(word)) {
+        if (this.posTagIsUndesired(word) && !this.wordStartsWithCapitalLetter(word)) {
             return;
         }
-        var instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> getMetaData().getSimilarityUtils().isWordSimilarToModelInstance(word, i));
+        var instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.getInstance().isWordSimilarToModelInstance(word, i));
         if (instanceNameIsSimilar) {
-            textState.addNounMapping(word, MappingKind.NAME, this, probability);
+            textState.addNounMapping(word, MappingKind.NAME, this, this.probability);
         }
     }
 
@@ -74,10 +75,9 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
      * value is taken as reference.
      */
     private void searchForType(LegacyModelExtractionState modelState, TextState textState, Word word) {
-        var similarityUtils = getMetaData().getSimilarityUtils();
-        var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> similarityUtils.isWordSimilarToModelInstanceType(word, i));
+        var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.getInstance().isWordSimilarToModelInstanceType(word, i));
         if (instanceTypeIsSimilar) {
-            textState.addNounMapping(word, MappingKind.TYPE, this, probability);
+            textState.addNounMapping(word, MappingKind.TYPE, this, this.probability);
         }
     }
 

@@ -19,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.similarity.PhraseMappingAggregatorStrategy;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.tlr.text.providers.informants.corenlp.PhraseImpl;
@@ -62,7 +63,7 @@ class MappingCombinerTest implements Claimant {
     void setup() {
         this.data = new DataRepository();
         this.agent = new MappingCombiner(this.data);
-        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy(this.data.getGlobalConfiguration());
+        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy();
         this.preTextState = new TextStateImpl(strategy);
 
         Word a0 = Mockito.mock(Word.class);
@@ -208,8 +209,7 @@ class MappingCombinerTest implements Claimant {
         this.preTextState.addNounMapping(this.dog3, MappingKind.NAME, this, 0.5);
 
         Assertions.assertTrue(this.phraseMappingsAreSimilar(this.preTextState, this.dog1, this.dog3));
-        Assertions.assertTrue(this.data.getGlobalConfiguration()
-                .getSimilarityUtils()
+        Assertions.assertTrue(SimilarityUtils.getInstance()
                 .areNounMappingsSimilar(this.preTextState.getNounMappingByWord(this.dog1), this.preTextState.getNounMappingByWord(this.dog3)));
 
         Assertions.assertEquals(2, this.preTextState.getNounMappings().size());
@@ -400,8 +400,7 @@ class MappingCombinerTest implements Claimant {
         var pm0 = textState.getPhraseMappingByNounMapping(nm0);
         var pm1 = textState.getPhraseMappingByNounMapping(nm1);
 
-        return this.data.getGlobalConfiguration()
-                .getSimilarityUtils()
+        return SimilarityUtils.getInstance()
                 .getPhraseMappingSimilarity(textState, pm0, pm1, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerTest.MIN_COSINE_SIMILARITY;
     }
 
@@ -456,7 +455,7 @@ class MappingCombinerTest implements Claimant {
     }
 
     private TextStateImpl createCopy(TextStateImpl textState) {
-        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy(this.data.getGlobalConfiguration());
+        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy();
         TextStateImpl newTextState = new TextStateImpl(strategy);
 
         MutableList<NounMapping> nounMappings = this.getField(textState, "nounMappings");
