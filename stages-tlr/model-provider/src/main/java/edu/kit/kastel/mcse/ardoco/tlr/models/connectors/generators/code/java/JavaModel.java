@@ -38,7 +38,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ControlElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.Datatype;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.InterfaceUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguage;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguages;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.tlr.models.connectors.generators.code.java.finder.EnumDeclarationFinder;
 import edu.kit.kastel.mcse.ardoco.tlr.models.connectors.generators.code.java.finder.MethodDeclarationFinder;
@@ -205,7 +205,7 @@ public final class JavaModel {
                 packageNames = getPackageNames(fullName);
             }
             CodeCompilationUnit codeCompilationUnit = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new TreeSet<>(), pathElements,
-                    extension, ProgrammingLanguage.JAVA);
+                    extension, ProgrammingLanguages.JAVA);
             codeCompilationUnits.add(codeCompilationUnit);
             if (null != packageDeclaration) {
                 CodePackage codePackage = getPackage(packageNames, codeCompilationUnit);

@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.Optional;
 import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
@@ -59,31 +59,31 @@ public final class ArCoTLModelProviderInformant extends Informant {
     public void process() {
         Model extractedModel;
 
-        if (fromFile != null) {
+        if (this.fromFile != null) {
             extractedModel = CodeExtractor.readInCodeModel(this.fromFile);
-            addModelStateToDataRepository(CodeModelType.CODE_MODEL.getModelId(), extractedModel);
+            this.addModelStateToDataRepository(Metamodel.CODE, extractedModel);
             return;
         }
 
         IdentifierProvider.reset();
-        logger.info("Extracting code model.");
-        extractedModel = extractor.extractModel();
-        if (extractor instanceof CodeExtractor codeExtractor && extractedModel instanceof CodeModel codeModel) {
-            logger.info("Writing out code model to file in directory.");
+        this.logger.info("Extracting code model.");
+        extractedModel = this.extractor.extractModel();
+        if (this.extractor instanceof CodeExtractor codeExtractor && extractedModel instanceof CodeModel codeModel) {
+            this.logger.info("Writing out code model to file in directory.");
             codeExtractor.writeOutCodeModel(codeModel);
         }
-        addModelStateToDataRepository(extractor.getModelId(), extractedModel);
+        this.addModelStateToDataRepository(this.extractor.getModelId(), extractedModel);
     }
 
-    private void addModelStateToDataRepository(String modelId, Model model) {
-        var dataRepository = getDataRepository();
-        Optional<ModelStates> modelStatesOptional = dataRepository.getData(MODEL_STATES_DATA, ModelStates.class);
+    private void addModelStateToDataRepository(Metamodel modelId, Model model) {
+        var dataRepository = this.getDataRepository();
+        Optional<ModelStates> modelStatesOptional = dataRepository.getData(ArCoTLModelProviderInformant.MODEL_STATES_DATA, ModelStates.class);
         var modelStates = modelStatesOptional.orElseGet(ModelStates::new);
 
         modelStates.addModel(modelId, model);
 
         if (modelStatesOptional.isEmpty()) {
-            dataRepository.addData(MODEL_STATES_DATA, modelStates);
+            dataRepository.addData(ArCoTLModelProviderInformant.MODEL_STATES_DATA, modelStates);
         }
     }
 

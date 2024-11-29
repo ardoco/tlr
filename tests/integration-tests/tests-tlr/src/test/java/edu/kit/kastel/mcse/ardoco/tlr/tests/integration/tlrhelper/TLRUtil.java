@@ -8,8 +8,8 @@ import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 
@@ -24,7 +24,7 @@ public final class TLRUtil {
 
     /**
      * extracts the trace links from a {@link DataRepository}
-     * 
+     *
      * @param data the {@link EvaluationResults}
      * @return the trace links
      */
@@ -40,7 +40,10 @@ public final class TLRUtil {
                 .map(connectionStates::getConnectionState)
                 .toList();
         for (var connectionState : connectionStatesList) {
-            traceLinks.addAll(connectionState.getTraceLinks().stream().map(ModelElementSentenceLink::new).toList());
+            traceLinks.addAll(connectionState.getTraceLinks()
+                    .stream()
+                    .map(it -> new ModelElementSentenceLink(it.getFirstEndpoint(), it.getSecondEndpoint()))
+                    .toList());
         }
         return traceLinks.toImmutable();
     }

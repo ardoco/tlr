@@ -3,7 +3,10 @@ package edu.kit.kastel.mcse.ardoco.tlr.tests.integration.tlrhelper;
 
 import java.util.Comparator;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
+import edu.kit.kastel.mcse.ardoco.core.common.Internal;
 
 /**
  * Represents a simple trace link by the id of the model and number of the sentence involved.
@@ -11,7 +14,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 public record ModelElementSentenceLink(String modelElementId, int sentenceNumber) implements Comparable<ModelElementSentenceLink> {
 
     public ModelElementSentenceLink(SadSamTraceLink traceLink) {
-        this(traceLink.getModelElementUid(), traceLink.getSentenceNumber());
+        this(traceLink.getArchitectureEntityId(), traceLink.getSentenceNumber());
+    }
+
+    @Internal
+    public ModelElementSentenceLink(SentenceEntity sentence, ArchitectureEntity architectureEntity) {
+        this(architectureEntity.getId(), sentence.getSentence().getSentenceNumber());
     }
 
     @Override

@@ -14,13 +14,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
-import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.CodeTraceabilityStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.CodeTraceabilityStateImpl;
 
 @Deterministic
 public class ArchitectureLinkToCodeLinkTransformerInformant extends Informant {
@@ -33,33 +32,33 @@ public class ArchitectureLinkToCodeLinkTransformerInformant extends Informant {
     public void process() {
         MutableSet<SadCodeTraceLink> sadCodeTracelinks = Sets.mutable.empty();
 
-        ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(getDataRepository());
-        ConnectionStates connectionStates = DataRepositoryHelper.getConnectionStates(getDataRepository());
+        ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(this.getDataRepository());
+        ConnectionStates connectionStates = DataRepositoryHelper.getConnectionStates(this.getDataRepository());
         if (modelStatesData == null || connectionStates == null) {
             return;
         }
 
-        CodeModel codeModel = findCodeModel(modelStatesData);
+        CodeModel codeModel = this.findCodeModel(modelStatesData);
 
         for (var traceLink : connectionStates.getConnectionState(Metamodel.CODE).getTraceLinks()) {
-            var modelElement = traceLink.getModelElementUid();
-            var mentionedCodeModelElements = findMentionedCodeModelElementsById(modelElement, codeModel);
+            var modelElement = traceLink.getSecondEndpoint().getId();
+            var mentionedCodeModelElements = this.findMentionedCodeModelElementsById(modelElement, codeModel);
             for (var mid : mentionedCodeModelElements) {
-                sadCodeTracelinks.add(new SadCodeTraceLink(new EndpointTuple(traceLink.getEndpointTuple().firstEndpoint(), mid)));
+                sadCodeTracelinks.add(new SadCodeTraceLink(traceLink.getFirstEndpoint(), mid));
             }
         }
 
         CodeTraceabilityState codeTraceabilityState = new CodeTraceabilityStateImpl();
-        getDataRepository().addData(CodeTraceabilityState.ID, codeTraceabilityState);
+        this.getDataRepository().addData(CodeTraceabilityState.ID, codeTraceabilityState);
         codeTraceabilityState.addSadCodeTraceLinks(sadCodeTracelinks);
     }
 
     private List<CodeCompilationUnit> findMentionedCodeModelElementsById(String modelElementId, CodeModel codeModel) {
         boolean isPackage = modelElementId.endsWith("/");
         if (isPackage) {
-            return findAllClassesInPackage(modelElementId, codeModel);
+            return this.findAllClassesInPackage(modelElementId, codeModel);
         }
-        return findCompilationUnitById(modelElementId, codeModel);
+        return this.findCompilationUnitById(modelElementId, codeModel);
     }
 
     private List<CodeCompilationUnit> findAllClassesInPackage(String modelElementId, CodeModel codeModel) {

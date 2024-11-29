@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.tlr.models.connectors.generators;
 
 import java.io.Serializable;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 
@@ -14,18 +15,18 @@ public abstract class Extractor implements Serializable {
     }
 
     public String getPath() {
-        return path;
+        return this.path;
     }
 
     public final Model extractModel(String path) {
         this.path = path;
-        return extractModel();
+        return this.extractModel();
     }
 
     public abstract Model extractModel();
 
-    public String getModelId() {
-        return getModelType().getModelId();
+    public Metamodel getModelId() {
+        return this.getModelType().getMetamodel();
     }
 
     public abstract ModelType getModelType();

@@ -9,7 +9,6 @@ import org.eclipse.collections.api.set.MutableSet;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -28,7 +27,7 @@ public class InconsistencyBaselineInformant extends Informant {
     @Override
     public void process() {
         var inconsistencyStates = InconsistencyStatesImpl.build();
-        DataRepository dataRepository = getDataRepository();
+        DataRepository dataRepository = this.getDataRepository();
         dataRepository.addData(InconsistencyStates.ID, inconsistencyStates);
 
         var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
@@ -40,7 +39,7 @@ public class InconsistencyBaselineInformant extends Informant {
             var modelState = modelStates.getModelExtractionState(model);
             Metamodel metamodel = modelState.getMetamodel();
             var traceLinks = connectionStates.getConnectionState(metamodel).getTraceLinks();
-            var sentencesWithTraceLinks = traceLinks.collect(SadSamTraceLink::getSentenceNumber).toSet();
+            var sentencesWithTraceLinks = traceLinks.collect(it -> it.getFirstEndpoint().getSentence().getSentenceNumber()).toSet();
             MutableSet<Integer> sentencesWithoutTraceLinks = sentences.withoutAll(sentencesWithTraceLinks);
 
             InconsistencyState inconsistencyState = inconsistencyStates.getInconsistencyState(metamodel);

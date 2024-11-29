@@ -13,7 +13,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -48,14 +48,15 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
         this.type = type;
         this.name = name;
         this.internalConfidence = new Confidence(AggregationFunctions.AVERAGE);
-        nameMappings = Lists.mutable.empty();
-        typeMappings = Lists.mutable.empty();
+        this.nameMappings = Lists.mutable.empty();
+        this.typeMappings = Lists.mutable.empty();
     }
 
     @Override
     public void onDelete(NounMapping deletedNounMapping, NounMapping replacement) {
-        if (replacement == null)
+        if (replacement == null) {
             throw new IllegalArgumentException("Replacement should not be null!");
+        }
 
         if (this.nameMappings.remove(deletedNounMapping)) {
             this.nameMappings.add(replacement);
@@ -82,11 +83,11 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
         this(name, type);
         this.internalConfidence.addAgentConfidence(claimant, probability);
 
-        nameMappings.addAll(nameNodes.castToCollection());
-        typeMappings.addAll(typeNodes.castToCollection());
+        this.nameMappings.addAll(nameNodes.castToCollection());
+        this.typeMappings.addAll(typeNodes.castToCollection());
 
-        nameMappings.forEach(nm -> nm.registerChangeListener(this));
-        typeMappings.forEach(nm -> nm.registerChangeListener(this));
+        this.nameMappings.forEach(nm -> nm.registerChangeListener(this));
+        this.typeMappings.forEach(nm -> nm.registerChangeListener(this));
     }
 
     private static double calculateMappingProbability(ImmutableList<NounMapping> nameMappings, ImmutableList<NounMapping> typeMappings) {
@@ -103,7 +104,7 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
      */
     @Override
     public ImmutableList<NounMapping> getNameMappings() {
-        return Lists.immutable.withAll(nameMappings);
+        return Lists.immutable.withAll(this.nameMappings);
     }
 
     /**
@@ -113,7 +114,7 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
      */
     @Override
     public ImmutableList<NounMapping> getTypeMappings() {
-        return Lists.immutable.withAll(typeMappings);
+        return Lists.immutable.withAll(this.typeMappings);
     }
 
     /**
@@ -123,20 +124,20 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
      */
     @Override
     public double getProbability() {
-        var mappingProbability = calculateMappingProbability(getNameMappings(), getTypeMappings());
-        var ownProbability = internalConfidence.getConfidence();
+        var mappingProbability = RecommendedInstanceImpl.calculateMappingProbability(this.getNameMappings(), this.getTypeMappings());
+        var ownProbability = this.internalConfidence.getConfidence();
         List<Double> probabilities = new ArrayList<>();
         probabilities.add(mappingProbability);
         probabilities.add(ownProbability);
 
-        if (Math.abs(weightInternalConfidence) > 1) {
-            var element = weightInternalConfidence > 0 ? ownProbability : mappingProbability;
-            for (int i = 0; i < Math.abs(weightInternalConfidence) - 1; i++) {
+        if (Math.abs(this.weightInternalConfidence) > 1) {
+            var element = this.weightInternalConfidence > 0 ? ownProbability : mappingProbability;
+            for (int i = 0; i < Math.abs(this.weightInternalConfidence) - 1; i++) {
                 probabilities.add(element);
             }
         }
 
-        return GLOBAL_AGGREGATOR.applyAsDouble(probabilities);
+        return RecommendedInstanceImpl.GLOBAL_AGGREGATOR.applyAsDouble(probabilities);
     }
 
     /**
@@ -147,8 +148,8 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
      */
     @Override
     public void addMappings(NounMapping nameMapping, NounMapping typeMapping) {
-        addName(nameMapping);
-        addType(typeMapping);
+        this.addName(nameMapping);
+        this.addType(typeMapping);
     }
 
     /**
@@ -170,9 +171,10 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
      */
     @Override
     public void addName(NounMapping nameMapping) {
-        if (nameMappings.contains(nameMapping))
+        if (this.nameMappings.contains(nameMapping)) {
             return;
-        nameMappings.add(nameMapping);
+        }
+        this.nameMappings.add(nameMapping);
         nameMapping.registerChangeListener(this);
     }
 
@@ -183,9 +185,10 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
      */
     @Override
     public void addType(NounMapping typeMapping) {
-        if (typeMappings.contains(typeMapping))
+        if (this.typeMappings.contains(typeMapping)) {
             return;
-        typeMappings.add(typeMapping);
+        }
+        this.typeMappings.add(typeMapping);
         typeMapping.registerChangeListener(this);
     }
 
@@ -196,7 +199,7 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
      */
     @Override
     public String getType() {
-        return type;
+        return this.type;
     }
 
     /**
@@ -206,7 +209,7 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
      */
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -236,7 +239,7 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
 
     @Override
     public ImmutableSortedSet<Integer> getSentenceNumbers() {
-        MutableSortedSet<Integer> sentenceNos = getNameMappings().flatCollect(nm -> nm.getWords().collect(Word::getSentenceNo)).toSortedSet();
+        MutableSortedSet<Integer> sentenceNos = this.getNameMappings().flatCollect(nm -> nm.getWords().collect(Word::getSentenceNo)).toSortedSet();
         return sentenceNos.toImmutableSortedSet();
     }
 
@@ -244,22 +247,22 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
     public String toString() {
         var separator = "\n\t\t\t\t\t";
         MutableList<String> typeNodeVals = Lists.mutable.empty();
-        for (NounMapping typeMapping : typeMappings) {
+        for (NounMapping typeMapping : this.typeMappings) {
             typeNodeVals.add(typeMapping.toString());
         }
 
         MutableList<String> nameNodeVals = Lists.mutable.empty();
-        for (NounMapping nameMapping : nameMappings) {
+        for (NounMapping nameMapping : this.nameMappings) {
             nameNodeVals.add(nameMapping.toString());
         }
-        return "RecommendationInstance [" + " name=" + name + ", type=" + type + ", probability=" + getProbability() + //
+        return "RecommendationInstance [" + " name=" + this.name + ", type=" + this.type + ", probability=" + this.getProbability() + //
                 ", mappings:]= " + separator + String.join(separator, nameNodeVals) + separator + String.join(separator, typeNodeVals) + "\n";
     }
 
     //FIXME Uses mutable properties
     @Override
     public int hashCode() {
-        return Objects.hash(name, type);
+        return Objects.hash(this.name, this.type);
     }
 
     //FIXME Uses mutable properties
@@ -271,13 +274,14 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
         if (!(obj instanceof RecommendedInstanceImpl other)) {
             return false;
         }
-        return Objects.equals(name, other.name) && Objects.equals(type, other.type);
+        return Objects.equals(this.name, other.name) && Objects.equals(this.type, other.type);
     }
 
     @Override
-    public int compareTo(ModelElement o) {
-        if (this == o)
+    public int compareTo(Entity o) {
+        if (this == o) {
             return 0;
+        }
         if (o instanceof RecommendedInstance ri) {
             return Comparator.comparing(RecommendedInstance::getName).thenComparing(RecommendedInstance::getType).compare(this, ri);
         }
