@@ -7,10 +7,10 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStateStrategy;
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendationStateStrategy;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 

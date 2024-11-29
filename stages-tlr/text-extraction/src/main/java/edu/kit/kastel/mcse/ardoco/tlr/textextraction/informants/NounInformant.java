@@ -5,10 +5,10 @@ import java.util.SortedMap;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;

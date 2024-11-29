@@ -6,9 +6,9 @@ import java.util.SortedMap;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;

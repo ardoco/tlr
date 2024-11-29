@@ -3,11 +3,11 @@ package edu.kit.kastel.mcse.ardoco.tlr.connectiongenerator.informants;
 
 import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;

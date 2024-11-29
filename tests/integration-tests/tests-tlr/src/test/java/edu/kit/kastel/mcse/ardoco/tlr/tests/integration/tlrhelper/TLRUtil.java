@@ -6,10 +6,10 @@ import java.util.List;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.LegacyModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 

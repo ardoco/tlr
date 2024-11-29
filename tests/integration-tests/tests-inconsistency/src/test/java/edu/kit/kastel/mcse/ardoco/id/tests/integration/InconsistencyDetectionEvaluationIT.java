@@ -28,10 +28,10 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;

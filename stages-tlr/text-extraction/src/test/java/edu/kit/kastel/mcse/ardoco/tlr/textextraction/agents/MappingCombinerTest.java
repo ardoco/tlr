@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.PhraseMappingAggregatorStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;

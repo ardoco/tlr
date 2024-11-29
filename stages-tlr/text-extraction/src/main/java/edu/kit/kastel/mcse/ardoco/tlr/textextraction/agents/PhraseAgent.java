@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.tlr.textextraction.agents;
 
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.tlr.textextraction.informants.CompoundAgentInformant;

@@ -4,11 +4,11 @@ package edu.kit.kastel.mcse.ardoco.tlr.connectiongenerator;
 import java.util.List;
 import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.tlr.connectiongenerator.agents.InitialConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.tlr.connectiongenerator.agents.InstanceConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.tlr.connectiongenerator.agents.ProjectNameFilterAgent;
 import edu.kit.kastel.mcse.ardoco.tlr.connectiongenerator.agents.ReferenceAgent;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 

@@ -20,11 +20,11 @@ import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMappingChangeListener;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMappingChangeListener;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;

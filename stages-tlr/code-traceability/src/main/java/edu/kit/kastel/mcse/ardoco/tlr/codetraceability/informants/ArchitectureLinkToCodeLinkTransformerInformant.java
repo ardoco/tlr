@@ -8,13 +8,13 @@ import java.util.SortedMap;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
-import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.codetraceability.CodeTraceabilityState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.connectiongenerator.ConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.tracelink.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;

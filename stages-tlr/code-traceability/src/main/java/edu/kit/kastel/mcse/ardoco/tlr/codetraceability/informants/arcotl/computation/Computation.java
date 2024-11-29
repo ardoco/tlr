@@ -5,7 +5,7 @@ import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.tracelink.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.computationtree.Node;
 

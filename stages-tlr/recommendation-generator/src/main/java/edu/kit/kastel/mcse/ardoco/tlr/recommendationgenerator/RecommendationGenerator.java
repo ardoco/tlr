@@ -5,7 +5,7 @@ import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Lists;
 
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendationStates;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.tlr.recommendationgenerator.agents.InitialRecommendationAgent;

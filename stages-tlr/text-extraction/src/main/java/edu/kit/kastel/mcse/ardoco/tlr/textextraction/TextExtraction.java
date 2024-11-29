@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.tlr.textextraction;
 import java.util.List;
 import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.tlr.textextraction.agents.AbbreviationAgent;
