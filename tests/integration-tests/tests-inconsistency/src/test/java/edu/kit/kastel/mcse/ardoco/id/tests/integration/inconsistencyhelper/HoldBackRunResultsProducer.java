@@ -14,7 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
@@ -35,7 +34,6 @@ public class HoldBackRunResultsProducer implements Serializable {
     protected SortedMap<String, String> additionalConfigs;
 
     public HoldBackRunResultsProducer() {
-        super();
     }
 
     /**
@@ -107,7 +105,7 @@ public class HoldBackRunResultsProducer implements Serializable {
      * @return the data repository that is produced
      */
     protected DataRepository runUnshared(GoldStandardProject goldStandardProject, HoldBackArCoTLModelProvider holdElementsBackModelConnector,
-            @DeepCopy DataRepository preRunDataRepository, boolean useInconsistencyBaseline) {
+            DataRepository preRunDataRepository, boolean useInconsistencyBaseline) {
         return new AnonymousRunner(goldStandardProject.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {

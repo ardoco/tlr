@@ -8,7 +8,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
-import edu.kit.kastel.mcse.ardoco.tlr.textextraction.agents.AbbreviationAgent;
 import edu.kit.kastel.mcse.ardoco.tlr.textextraction.agents.InitialTextAgent;
 import edu.kit.kastel.mcse.ardoco.tlr.textextraction.agents.PhraseAgent;
 
@@ -21,10 +20,7 @@ public class TextExtraction extends AbstractExecutionStage {
      * Instantiates a new text extractor.
      */
     public TextExtraction(DataRepository dataRepository) {
-        super(List.of(//
-                new InitialTextAgent(dataRepository),//
-                new PhraseAgent(dataRepository),//
-                new AbbreviationAgent(dataRepository)), "TextExtraction", dataRepository);
+        super(List.of(new InitialTextAgent(dataRepository), new PhraseAgent(dataRepository)), "TextExtraction", dataRepository);
     }
 
     /**
@@ -42,7 +38,7 @@ public class TextExtraction extends AbstractExecutionStage {
 
     @Override
     protected void initializeState() {
-        var dataRepository = getDataRepository();
+        var dataRepository = this.getDataRepository();
         var optionalTextState = dataRepository.getData(TextState.ID, TextStateImpl.class);
         if (optionalTextState.isEmpty()) {
             TextStateStrategy tts = new OriginalTextStateStrategy(dataRepository.getGlobalConfiguration());

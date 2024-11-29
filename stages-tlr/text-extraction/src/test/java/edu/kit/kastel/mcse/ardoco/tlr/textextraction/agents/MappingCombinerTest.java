@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.PhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -59,9 +61,9 @@ class MappingCombinerTest implements Claimant {
     @BeforeEach
     void setup() {
         this.data = new DataRepository();
-        this.agent = new MappingCombiner(data);
-        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy(data.getGlobalConfiguration());
-        preTextState = new TextStateImpl(strategy);
+        this.agent = new MappingCombiner(this.data);
+        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy(this.data.getGlobalConfiguration());
+        this.preTextState = new TextStateImpl(strategy);
 
         Word a0 = Mockito.mock(Word.class);
         Word fast0 = Mockito.mock(Word.class);
@@ -73,16 +75,16 @@ class MappingCombinerTest implements Claimant {
         PhraseImpl foxPhrase0 = Mockito.mock(PhraseImpl.class);
         PhraseImpl dogPhrase0 = Mockito.mock(PhraseImpl.class);
 
-        mockPhrase(foxPhrase0, "A fast fox", 0, Lists.immutable.with(a0, fast0, fox0));
-        mockPhrase(dogPhrase0, "the brown dog", 0, Lists.immutable.with(the1, brown1, dog1));
+        this.mockPhrase(foxPhrase0, "A fast fox", 0, Lists.immutable.with(a0, fast0, fox0));
+        this.mockPhrase(dogPhrase0, "the brown dog", 0, Lists.immutable.with(the1, brown1, dog1));
 
-        mockWord(a0, "a", "a", 0, foxPhrase0, 0);
-        mockWord(fast0, "fast", "fast", 0, foxPhrase0, 1);
-        mockWord(fox0, "fox", "fox", 0, foxPhrase0, 2);
+        this.mockWord(a0, "a", "a", 0, foxPhrase0, 0);
+        this.mockWord(fast0, "fast", "fast", 0, foxPhrase0, 1);
+        this.mockWord(fox0, "fox", "fox", 0, foxPhrase0, 2);
 
-        mockWord(the1, "the", "the", 0, dogPhrase0, 6);
-        mockWord(brown1, "brown", "brown", 0, dogPhrase0, 7);
-        mockWord(dog1, "dog", "dog", 0, dogPhrase0, 8);
+        this.mockWord(the1, "the", "the", 0, dogPhrase0, 6);
+        this.mockWord(brown1, "brown", "brown", 0, dogPhrase0, 7);
+        this.mockWord(dog1, "dog", "dog", 0, dogPhrase0, 8);
 
         Word the2 = Mockito.mock(Word.class);
         Word lazy2 = Mockito.mock(Word.class);
@@ -95,17 +97,17 @@ class MappingCombinerTest implements Claimant {
         PhraseImpl foxPhrase1 = Mockito.mock(PhraseImpl.class);
         PhraseImpl dogPhrase1 = Mockito.mock(PhraseImpl.class);
 
-        mockPhrase(foxPhrase1, "The lazy fox", 1, Lists.immutable.with(the2, lazy2, fox2));
-        mockPhrase(dogPhrase1, "the brown dog hut", 1, Lists.immutable.with(the3, brown3, dog3, hut3));
+        this.mockPhrase(foxPhrase1, "The lazy fox", 1, Lists.immutable.with(the2, lazy2, fox2));
+        this.mockPhrase(dogPhrase1, "the brown dog hut", 1, Lists.immutable.with(the3, brown3, dog3, hut3));
 
-        mockWord(the2, "the", "the", 1, foxPhrase1, 0);
-        mockWord(lazy2, "lazy", "lazy", 1, foxPhrase1, 1);
-        mockWord(fox2, "fox", "fox", 1, foxPhrase1, 2);
+        this.mockWord(the2, "the", "the", 1, foxPhrase1, 0);
+        this.mockWord(lazy2, "lazy", "lazy", 1, foxPhrase1, 1);
+        this.mockWord(fox2, "fox", "fox", 1, foxPhrase1, 2);
 
-        mockWord(the3, "the", "the", 1, dogPhrase1, 5);
-        mockWord(brown3, "brown", "brown", 1, dogPhrase1, 6);
-        mockWord(dog3, "dog", "dog", 1, dogPhrase1, 7);
-        mockWord(hut3, "hut", "hut", 1, dogPhrase1, 8);
+        this.mockWord(the3, "the", "the", 1, dogPhrase1, 5);
+        this.mockWord(brown3, "brown", "brown", 1, dogPhrase1, 6);
+        this.mockWord(dog3, "dog", "dog", 1, dogPhrase1, 7);
+        this.mockWord(hut3, "hut", "hut", 1, dogPhrase1, 8);
 
         Word i4 = Mockito.mock(Word.class);
         Word green4 = Mockito.mock(Word.class);
@@ -115,13 +117,13 @@ class MappingCombinerTest implements Claimant {
         PhraseImpl iPhrase2 = Mockito.mock(PhraseImpl.class);
         PhraseImpl turtlePhrase2 = Mockito.mock(PhraseImpl.class);
 
-        mockPhrase(iPhrase2, "I", 2, Lists.immutable.with(i4));
-        mockPhrase(turtlePhrase2, "green turtle hats", 2, Lists.immutable.with(green4, turtle4, hats4));
+        this.mockPhrase(iPhrase2, "I", 2, Lists.immutable.with(i4));
+        this.mockPhrase(turtlePhrase2, "green turtle hats", 2, Lists.immutable.with(green4, turtle4, hats4));
 
-        mockWord(i4, "I", "i", 2, iPhrase2, 0);
-        mockWord(green4, "green", "green", 2, turtlePhrase2, 2);
-        mockWord(turtle4, "turtles", "turtles", 2, turtlePhrase2, 3);
-        mockWord(hats4, "hats", "hat", 2, turtlePhrase2, 4);
+        this.mockWord(i4, "I", "i", 2, iPhrase2, 0);
+        this.mockWord(green4, "green", "green", 2, turtlePhrase2, 2);
+        this.mockWord(turtle4, "turtles", "turtles", 2, turtlePhrase2, 3);
+        this.mockWord(hats4, "hats", "hat", 2, turtlePhrase2, 4);
 
         Word a5 = Mockito.mock(Word.class);
         Word brown5 = Mockito.mock(Word.class);
@@ -129,23 +131,23 @@ class MappingCombinerTest implements Claimant {
         Word hut5 = Mockito.mock(Word.class);
         PhraseImpl dogPhrase3 = Mockito.mock(PhraseImpl.class);
 
-        mockPhrase(dogPhrase3, "A brown doggy hut", 3, Lists.immutable.with(a5, brown5, doggy5, hut5));
+        this.mockPhrase(dogPhrase3, "A brown doggy hut", 3, Lists.immutable.with(a5, brown5, doggy5, hut5));
 
-        mockWord(a5, "a", "a", 3, dogPhrase3, 0);
-        mockWord(brown5, "brown", "brown", 3, dogPhrase3, 1);
-        mockWord(doggy5, "doggy", "dog", 3, dogPhrase3, 2);
-        mockWord(hut5, "hut", "hut", 3, dogPhrase3, 3);
+        this.mockWord(a5, "a", "a", 3, dogPhrase3, 0);
+        this.mockWord(brown5, "brown", "brown", 3, dogPhrase3, 1);
+        this.mockWord(doggy5, "doggy", "dog", 3, dogPhrase3, 2);
+        this.mockWord(hut5, "hut", "hut", 3, dogPhrase3, 3);
 
         Word green6 = Mockito.mock(Word.class);
         Word dog6 = Mockito.mock(Word.class);
         Word hats6 = Mockito.mock(Word.class);
         PhraseImpl dogPhrase4 = Mockito.mock(PhraseImpl.class);
 
-        mockPhrase(dogPhrase4, "green dog hats", 4, Lists.immutable.with(green6, dog6, hats6));
+        this.mockPhrase(dogPhrase4, "green dog hats", 4, Lists.immutable.with(green6, dog6, hats6));
 
-        mockWord(green6, "green", "green", 4, dogPhrase4, 2);
-        mockWord(dog6, "dog", "dog", 4, dogPhrase4, 3);
-        mockWord(hats6, "hats", "hat", 4, dogPhrase4, 4);
+        this.mockWord(green6, "green", "green", 4, dogPhrase4, 2);
+        this.mockWord(dog6, "dog", "dog", 4, dogPhrase4, 3);
+        this.mockWord(hats6, "hats", "hat", 4, dogPhrase4, 4);
 
         this.fox0 = fox0;
         this.dog1 = dog1;
@@ -164,107 +166,107 @@ class MappingCombinerTest implements Claimant {
 
     @Test
     void copy() {
-        preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.fox0, MappingKind.NAME, this, 0.5);
 
-        textState = createCopy(preTextState);
-        this.data.addData(TextStateImpl.ID, textState);
-        agent.run();
+        this.textState = this.createCopy(this.preTextState);
+        this.data.addData(TextState.ID, this.textState);
+        this.agent.run();
 
-        Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings());
-        Assertions.assertEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings());
+        Assertions.assertEquals(this.preTextState.getNounMappings(), this.textState.getNounMappings());
+        Assertions.assertEquals(this.preTextState.getPhraseMappings(), this.textState.getPhraseMappings());
 
-        preTextState.addNounMapping(dog3, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.dog3, MappingKind.NAME, this, 0.5);
 
-        Assertions.assertNotEquals(preTextState.getNounMappings(), textState.getNounMappings());
-        Assertions.assertNotEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings());
+        Assertions.assertNotEquals(this.preTextState.getNounMappings(), this.textState.getNounMappings());
+        Assertions.assertNotEquals(this.preTextState.getPhraseMappings(), this.textState.getPhraseMappings());
     }
 
     @Test
     void addEqualNounMappingWithEqualPhrase() {
 
-        preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.fox0, MappingKind.NAME, this, 0.5);
 
-        var fox0NM = preTextState.getNounMappingByWord(fox0);
-        Assertions.assertNotNull(preTextState.getPhraseMappingByNounMapping(fox0NM));
+        var fox0NM = this.preTextState.getNounMappingByWord(this.fox0);
+        Assertions.assertNotNull(this.preTextState.getPhraseMappingByNounMapping(fox0NM));
 
-        preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
-        Assertions.assertEquals(1, preTextState.getNounMappings().size());
-        Assertions.assertEquals(1, preTextState.getPhraseMappings().size());
+        this.preTextState.addNounMapping(this.fox0, MappingKind.NAME, this, 0.5);
+        Assertions.assertEquals(1, this.preTextState.getNounMappings().size());
+        Assertions.assertEquals(1, this.preTextState.getPhraseMappings().size());
 
-        textState = createCopy(preTextState);
-        this.data.addData(TextStateImpl.ID, textState);
-        agent.run();
+        this.textState = this.createCopy(this.preTextState);
+        this.data.addData(TextState.ID, this.textState);
+        this.agent.run();
 
-        Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings());
-        Assertions.assertEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings());
+        Assertions.assertEquals(this.preTextState.getNounMappings(), this.textState.getNounMappings());
+        Assertions.assertEquals(this.preTextState.getPhraseMappings(), this.textState.getPhraseMappings());
     }
 
     @Test
     void addTextualEqualNounMappingWithSimilarPhrase() {
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
-        preTextState.addNounMapping(dog3, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.dog1, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.dog3, MappingKind.NAME, this, 0.5);
 
-        Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
-        Assertions.assertTrue(data.getGlobalConfiguration()
+        Assertions.assertTrue(this.phraseMappingsAreSimilar(this.preTextState, this.dog1, this.dog3));
+        Assertions.assertTrue(this.data.getGlobalConfiguration()
                 .getSimilarityUtils()
-                .areNounMappingsSimilar(preTextState.getNounMappingByWord(dog1), preTextState.getNounMappingByWord(dog3)));
+                .areNounMappingsSimilar(this.preTextState.getNounMappingByWord(this.dog1), this.preTextState.getNounMappingByWord(this.dog3)));
 
-        Assertions.assertEquals(2, preTextState.getNounMappings().size());
-        Assertions.assertEquals(2, preTextState.getPhraseMappings().size());
+        Assertions.assertEquals(2, this.preTextState.getNounMappings().size());
+        Assertions.assertEquals(2, this.preTextState.getPhraseMappings().size());
 
-        textState = createCopy(preTextState);
-        this.data.addData(TextStateImpl.ID, textState);
-        agent.run();
+        this.textState = this.createCopy(this.preTextState);
+        this.data.addData(TextState.ID, this.textState);
+        this.agent.run();
 
-        Assertions.assertTrue(nounMappingsWereMerged(preTextState, dog1, dog3, textState));
-        Assertions.assertTrue(phraseMappingsWereMerged(preTextState, dog1, dog3, textState));
+        Assertions.assertTrue(this.nounMappingsWereMerged(this.preTextState, this.dog1, this.dog3, this.textState));
+        Assertions.assertTrue(this.phraseMappingsWereMerged(this.preTextState, this.dog1, this.dog3, this.textState));
     }
 
     @Test
     void addTextualEqualNounMappingWithDifferentPhrase() {
 
-        preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
-        preTextState.addNounMapping(fox2, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.fox0, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.fox2, MappingKind.NAME, this, 0.5);
 
-        Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, fox0, fox2));
+        Assertions.assertFalse(this.phraseMappingsAreSimilar(this.preTextState, this.fox0, this.fox2));
 
-        Assertions.assertEquals(2, preTextState.getNounMappings().size());
-        Assertions.assertEquals(2, preTextState.getPhraseMappings().size());
+        Assertions.assertEquals(2, this.preTextState.getNounMappings().size());
+        Assertions.assertEquals(2, this.preTextState.getPhraseMappings().size());
 
-        textState = createCopy(preTextState);
-        this.data.addData(TextStateImpl.ID, textState);
-        agent.run();
+        this.textState = this.createCopy(this.preTextState);
+        this.data.addData(TextState.ID, this.textState);
+        this.agent.run();
 
-        Assertions.assertEquals(2, textState.getNounMappings().size());
-        Assertions.assertEquals(2, textState.getPhraseMappings().size());
+        Assertions.assertEquals(2, this.textState.getNounMappings().size());
+        Assertions.assertEquals(2, this.textState.getPhraseMappings().size());
     }
 
     @Test
     void addSimilarNounMappingWithEqualPhrase() {
 
         Word alternativeDog = Mockito.mock(Word.class);
-        mockWord(alternativeDog, "doggy", "doggy", 0, dogPhrase0, 0);
+        this.mockWord(alternativeDog, "doggy", "doggy", 0, this.dogPhrase0, 0);
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
-        preTextState.addNounMapping(alternativeDog, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.dog1, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(alternativeDog, MappingKind.NAME, this, 0.5);
 
-        textState = createCopy(preTextState);
-        this.data.addData(TextStateImpl.ID, textState);
-        agent.run();
+        this.textState = this.createCopy(this.preTextState);
+        this.data.addData(TextState.ID, this.textState);
+        this.agent.run();
 
-        Assertions.assertNotEquals(null, textState.getNounMappingByWord(dog1));
-        Assertions.assertEquals(textState.getNounMappingByWord(dog1), textState.getNounMappingByWord(alternativeDog));
+        Assertions.assertNotEquals(null, this.textState.getNounMappingByWord(this.dog1));
+        Assertions.assertEquals(this.textState.getNounMappingByWord(this.dog1), this.textState.getNounMappingByWord(alternativeDog));
 
-        NounMapping doggyNounMapping = textState.getNounMappingByWord(alternativeDog);
+        NounMapping doggyNounMapping = this.textState.getNounMappingByWord(alternativeDog);
 
         Assertions.assertAll(//
                 () -> Assertions.assertTrue(doggyNounMapping.getWords().contains(alternativeDog)), //
-                () -> Assertions.assertTrue(doggyNounMapping.getWords().contains(dog1)), //
+                () -> Assertions.assertTrue(doggyNounMapping.getWords().contains(this.dog1)), //
                 () -> Assertions.assertEquals(1, doggyNounMapping.getPhrases().size())//
         );
 
-        var doggyPhraseMapping = textState.getPhraseMappingByNounMapping(doggyNounMapping);
+        var doggyPhraseMapping = this.textState.getPhraseMappingByNounMapping(doggyNounMapping);
         Assertions.assertEquals(1, doggyPhraseMapping.getPhrases().size());//
 
     }
@@ -272,124 +274,123 @@ class MappingCombinerTest implements Claimant {
     @Test
     void addSimilarNounMappingWithSimilarPhraseContainingSimilarNounMapping() {
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
-        preTextState.addNounMapping(dog3, MappingKind.TYPE, this, 0.5);
+        this.preTextState.addNounMapping(this.dog1, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.dog3, MappingKind.TYPE, this, 0.5);
 
-        Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
+        Assertions.assertTrue(this.phraseMappingsAreSimilar(this.preTextState, this.dog1, this.dog3));
 
-        textState = createCopy(preTextState);
-        this.data.addData(TextStateImpl.ID, textState);
-        agent.run();
+        this.textState = this.createCopy(this.preTextState);
+        this.data.addData(TextState.ID, this.textState);
+        this.agent.run();
 
-        Assertions.assertTrue(nounMappingsWereMerged(preTextState, dog1, dog3, textState));
-        Assertions.assertEquals(1, textState.getNounMappings().size());
+        Assertions.assertTrue(this.nounMappingsWereMerged(this.preTextState, this.dog1, this.dog3, this.textState));
+        Assertions.assertEquals(1, this.textState.getNounMappings().size());
     }
 
     @Test
     void addSimilarNounMappingWithSimilarPhraseContainingNoSimilarNounMapping() {
 
-        preTextState.addNounMapping(turtle4, MappingKind.TYPE, this, 0.5);
-        preTextState.addNounMapping(dog6, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.turtle4, MappingKind.TYPE, this, 0.5);
+        this.preTextState.addNounMapping(this.dog6, MappingKind.NAME, this, 0.5);
 
-        Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, turtle4, dog6));
+        Assertions.assertTrue(this.phraseMappingsAreSimilar(this.preTextState, this.turtle4, this.dog6));
 
-        textState = createCopy(preTextState);
-        this.data.addData(TextStateImpl.ID, textState);
-        agent.run();
+        this.textState = this.createCopy(this.preTextState);
+        this.data.addData(TextState.ID, this.textState);
+        this.agent.run();
 
         Assertions.assertAll(//
-                () -> Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings()), () -> Assertions.assertEquals(preTextState
-                        .getPhraseMappings(), textState.getPhraseMappings()));
+                () -> Assertions.assertEquals(this.preTextState.getNounMappings(), this.textState.getNounMappings()), () -> Assertions.assertEquals(
+                        this.preTextState.getPhraseMappings(), this.textState.getPhraseMappings()));
     }
 
     @Test
     void addSimilarNounMappingWithDifferentPhrase() {
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
-        preTextState.addNounMapping(doggy5, MappingKind.TYPE, this, 0.5);
+        this.preTextState.addNounMapping(this.dog1, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.doggy5, MappingKind.TYPE, this, 0.5);
 
-        var dog = dogPhrase1.compareTo(dogPhrase3);
+        var dog = this.dogPhrase1.compareTo(this.dogPhrase3);
 
-        Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, dog1, doggy5));
+        Assertions.assertFalse(this.phraseMappingsAreSimilar(this.preTextState, this.dog1, this.doggy5));
 
-        textState = createCopy(preTextState);
-        this.data.addData(TextStateImpl.ID, textState);
-        agent.run();
+        this.textState = this.createCopy(this.preTextState);
+        this.data.addData(TextState.ID, this.textState);
+        this.agent.run();
 
         Assertions.assertAll(//
-                () -> Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings()), () -> Assertions.assertEquals(preTextState
-                        .getPhraseMappings(), textState.getPhraseMappings()));
+                () -> Assertions.assertEquals(this.preTextState.getNounMappings(), this.textState.getNounMappings()), () -> Assertions.assertEquals(
+                        this.preTextState.getPhraseMappings(), this.textState.getPhraseMappings()));
 
     }
 
     @Test
     void addDifferentNounMappingWithEqualPhrase() {
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
-        preTextState.addNounMapping(dog3, MappingKind.NAME, this, 0.5);
-        preTextState.addNounMapping(hut3, MappingKind.TYPE, this, 0.5);
+        this.preTextState.addNounMapping(this.dog1, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.dog3, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.hut3, MappingKind.TYPE, this, 0.5);
 
-        Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
-        Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, hut3));
+        Assertions.assertTrue(this.phraseMappingsAreSimilar(this.preTextState, this.dog1, this.dog3));
+        Assertions.assertTrue(this.phraseMappingsAreSimilar(this.preTextState, this.dog1, this.hut3));
 
-        textState = createCopy(preTextState);
-        this.data.addData(TextStateImpl.ID, textState);
-        agent.run();
+        this.textState = this.createCopy(this.preTextState);
+        this.data.addData(TextState.ID, this.textState);
+        this.agent.run();
 
-        PhraseMapping dog1PhraseMapping = textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase1)).get(0);
+        PhraseMapping dog1PhraseMapping = this.textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(this.dogPhrase1)).get(0);
 
         Assertions.assertAll(//
 
-                () -> Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings()), () -> Assertions.assertEquals(1, textState
-                        .getNounMappings()
-                        .select(nm -> nm.getWords().contains(hut3))
-                        .size()), () -> Assertions.assertEquals(1, textState.getNounMappings().select(nm -> nm.getWords().contains(dog3)).size()),
+                () -> Assertions.assertEquals(this.preTextState.getNounMappings(), this.textState.getNounMappings()), () -> Assertions.assertEquals(1,
+                        this.textState.getNounMappings().select(nm -> nm.getWords().contains(this.hut3)).size()), () -> Assertions.assertEquals(1,
+                                this.textState.getNounMappings().select(nm -> nm.getWords().contains(this.dog3)).size()),
 
-                () -> Assertions.assertEquals(preTextState.getPhraseMappings(), textState.getPhraseMappings()), () -> Assertions.assertEquals(1, textState
-                        .getPhraseMappings()
-                        .select(pm -> pm.getPhrases().contains(dogPhrase1))
-                        .size()), () -> Assertions.assertTrue(textState.getNounMappingsByPhraseMapping(textState.getPhraseMappings()
-                                .select(pm -> pm.getPhrases().contains(dogPhrase0))
-                                .get(0)).select(nm -> nm.getWords().contains(dog3)).isEmpty()),
+                () -> Assertions.assertEquals(this.preTextState.getPhraseMappings(), this.textState.getPhraseMappings()), () -> Assertions.assertEquals(1,
+                        this.textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(this.dogPhrase1)).size()), () -> Assertions.assertTrue(
+                                this.textState.getNounMappingsByPhraseMapping(this.textState.getPhraseMappings()
+                                        .select(pm -> pm.getPhrases().contains(this.dogPhrase0))
+                                        .get(0)).select(nm -> nm.getWords().contains(this.dog3)).isEmpty()),
 
-                () -> Assertions.assertEquals(1, textState.getNounMappingsByPhraseMapping(dog1PhraseMapping).select(nm -> nm.getWords().contains(dog3)).size()),
-                () -> Assertions.assertEquals(1, textState.getNounMappingsByPhraseMapping(dog1PhraseMapping)
-                        .select(nm -> nm.getWords().contains(hut3))
-                        .size()));
+                () -> Assertions.assertEquals(1, this.textState.getNounMappingsByPhraseMapping(dog1PhraseMapping)
+                        .select(nm -> nm.getWords().contains(this.dog3))
+                        .size()), () -> Assertions.assertEquals(1, this.textState.getNounMappingsByPhraseMapping(dog1PhraseMapping)
+                                .select(nm -> nm.getWords().contains(this.hut3))
+                                .size()));
     }
 
     @Test
     void addDifferentNounMappingWithSimilarPhrase() {
 
-        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
-        preTextState.addNounMapping(hut3, MappingKind.TYPE, this, 0.5);
+        this.preTextState.addNounMapping(this.dog1, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.hut3, MappingKind.TYPE, this, 0.5);
 
-        Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, hut3));
+        Assertions.assertTrue(this.phraseMappingsAreSimilar(this.preTextState, this.dog1, this.hut3));
 
-        textState = createCopy(preTextState);
-        this.data.addData(TextStateImpl.ID, textState);
-        agent.run();
+        this.textState = this.createCopy(this.preTextState);
+        this.data.addData(TextState.ID, this.textState);
+        this.agent.run();
 
         Assertions.assertAll(//
-                () -> Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings()), () -> Assertions.assertEquals(preTextState
-                        .getPhraseMappings(), textState.getPhraseMappings()));
+                () -> Assertions.assertEquals(this.preTextState.getNounMappings(), this.textState.getNounMappings()), () -> Assertions.assertEquals(
+                        this.preTextState.getPhraseMappings(), this.textState.getPhraseMappings()));
 
     }
 
     @Test
     void addDifferentNounMappingWithDifferentPhrase() {
-        preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
-        preTextState.addNounMapping(turtle4, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.dog1, MappingKind.NAME, this, 0.5);
+        this.preTextState.addNounMapping(this.turtle4, MappingKind.NAME, this, 0.5);
 
-        Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, dog1, turtle4));
+        Assertions.assertFalse(this.phraseMappingsAreSimilar(this.preTextState, this.dog1, this.turtle4));
 
-        textState = createCopy(preTextState);
-        this.data.addData(TextStateImpl.ID, textState);
-        agent.run();
+        this.textState = this.createCopy(this.preTextState);
+        this.data.addData(TextState.ID, this.textState);
+        this.agent.run();
 
         Assertions.assertAll(//
-                () -> Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings()), () -> Assertions.assertEquals(preTextState
-                        .getPhraseMappings(), textState.getPhraseMappings()));
+                () -> Assertions.assertEquals(this.preTextState.getNounMappings(), this.textState.getNounMappings()), () -> Assertions.assertEquals(
+                        this.preTextState.getPhraseMappings(), this.textState.getPhraseMappings()));
     }
 
     private boolean phraseMappingsAreSimilar(TextStateImpl textState, Word word1, Word word2) {
@@ -399,7 +400,7 @@ class MappingCombinerTest implements Claimant {
         var pm0 = textState.getPhraseMappingByNounMapping(nm0);
         var pm1 = textState.getPhraseMappingByNounMapping(nm1);
 
-        return data.getGlobalConfiguration()
+        return this.data.getGlobalConfiguration()
                 .getSimilarityUtils()
                 .getPhraseMappingSimilarity(textState, pm0, pm1, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerTest.MIN_COSINE_SIMILARITY;
     }
@@ -407,11 +408,11 @@ class MappingCombinerTest implements Claimant {
     private boolean nounMappingsWereMerged(TextStateImpl preTextState, Word word1, Word word2, TextStateImpl afterTextState) {
 
         Assertions.assertNotEquals(preTextState.getNounMappings().size(), afterTextState.getNounMappings().size());
-        Assertions.assertNotNull(textState.getNounMappingByWord(word1));
-        Assertions.assertNotNull(textState.getNounMappingByWord(word2));
-        Assertions.assertEquals(textState.getNounMappingByWord(word1), textState.getNounMappingByWord(word2));
+        Assertions.assertNotNull(this.textState.getNounMappingByWord(word1));
+        Assertions.assertNotNull(this.textState.getNounMappingByWord(word2));
+        Assertions.assertEquals(this.textState.getNounMappingByWord(word1), this.textState.getNounMappingByWord(word2));
 
-        var nounMapping = textState.getNounMappingByWord(word1);
+        var nounMapping = this.textState.getNounMappingByWord(word1);
 
         Assertions.assertTrue(nounMapping.getWords().contains(word1));
         Assertions.assertTrue(nounMapping.getWords().contains(word2));
@@ -425,9 +426,9 @@ class MappingCombinerTest implements Claimant {
         var nounMapping2 = afterTextState.getNounMappingByWord(word2);
 
         Assertions.assertNotEquals(preTextState.getPhraseMappings().size(), afterTextState.getPhraseMappings().size());
-        Assertions.assertEquals(textState.getPhraseMappingByNounMapping(nounMapping1), textState.getPhraseMappingByNounMapping(nounMapping2));
+        Assertions.assertEquals(this.textState.getPhraseMappingByNounMapping(nounMapping1), this.textState.getPhraseMappingByNounMapping(nounMapping2));
 
-        var phraseMapping = textState.getPhraseMappingByNounMapping(nounMapping1);
+        var phraseMapping = this.textState.getPhraseMappingByNounMapping(nounMapping1);
 
         Assertions.assertTrue(phraseMapping.getPhrases().contains(word1.getPhrase()));
         Assertions.assertTrue(phraseMapping.getPhrases().contains(word2.getPhrase()));
@@ -442,7 +443,7 @@ class MappingCombinerTest implements Claimant {
         Mockito.when(phrase.getContainedWords()).thenReturn(containedWords);
         Mockito.when(phrase.getPhraseVector()).thenCallRealMethod();
         Mockito.when(phrase.toString()).thenCallRealMethod();
-        Mockito.when(phrase.compareTo(Mockito.any())).thenCallRealMethod();
+        Mockito.when(phrase.compareTo(ArgumentMatchers.any())).thenCallRealMethod();
     }
 
     private void mockWord(Word word, String text, String lemma, int sentenceNumber, Phrase phrase, int position) {
@@ -451,18 +452,18 @@ class MappingCombinerTest implements Claimant {
         Mockito.when(word.getSentenceNo()).thenReturn(sentenceNumber);
         Mockito.when(word.getLemma()).thenReturn(lemma);
         Mockito.when(word.getPhrase()).thenReturn(phrase);
-        Mockito.when(word.compareTo(Mockito.any())).thenCallRealMethod();
+        Mockito.when(word.compareTo(ArgumentMatchers.any())).thenCallRealMethod();
     }
 
     private TextStateImpl createCopy(TextStateImpl textState) {
-        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy(data.getGlobalConfiguration());
+        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy(this.data.getGlobalConfiguration());
         TextStateImpl newTextState = new TextStateImpl(strategy);
 
-        MutableList<NounMapping> nounMappings = getField(textState, "nounMappings");
-        MutableList<PhraseMapping> phraseMappings = getField(textState, "phraseMappings");
+        MutableList<NounMapping> nounMappings = this.getField(textState, "nounMappings");
+        MutableList<PhraseMapping> phraseMappings = this.getField(textState, "phraseMappings");
 
-        MutableList<NounMapping> newNounMappings = getField(newTextState, "nounMappings");
-        MutableList<PhraseMapping> newPhraseMappings = getField(newTextState, "phraseMappings");
+        MutableList<NounMapping> newNounMappings = this.getField(newTextState, "nounMappings");
+        MutableList<PhraseMapping> newPhraseMappings = this.getField(newTextState, "phraseMappings");
 
         newNounMappings.addAll(nounMappings);
         newPhraseMappings.addAll(phraseMappings);
