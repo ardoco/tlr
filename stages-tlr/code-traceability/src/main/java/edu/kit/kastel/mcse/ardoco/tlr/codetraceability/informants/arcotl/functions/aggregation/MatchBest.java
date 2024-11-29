@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.functi
 
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.entity.Entity;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.Confidence;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.NodeResult;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.computationtree.AggregationNode;
