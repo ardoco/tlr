@@ -10,16 +10,13 @@ import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.ordered.SortedIterable;
-import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.PhraseAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextStateStrategy;
-import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.WordAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
@@ -33,13 +30,15 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 public class TextStateImpl extends AbstractState implements TextState {
 
     private static final Comparator<NounMapping> ORDER_NOUNMAPPING = (n1, n2) -> {
-        if (n1.equals(n2))
+        if (n1.equals(n2)) {
             return 0;
+        }
         var nm1 = (NounMappingImpl) n1;
         var nm2 = (NounMappingImpl) n2;
         int compare = Long.compare(nm1.earliestCreationTime(), nm2.earliestCreationTime());
-        if (compare != 0)
+        if (compare != 0) {
             return compare;
+        }
         throw new IllegalStateException("NounMappings are not equal but have same creation time");
     };
 
@@ -51,24 +50,18 @@ public class TextStateImpl extends AbstractState implements TextState {
     private static final double MAPPING_KIND_MAX_DIFF = 0.1;
     private MutableList<NounMapping> nounMappings;
     private MutableList<PhraseMapping> phraseMappings;
-    private MutableSortedSet<WordAbbreviation> wordAbbreviations;
-    private MutableSortedSet<PhraseAbbreviation> phraseAbbreviations;
     private final TextStateStrategy strategy;
 
     // Configuration Test
     @SuppressWarnings("unused")
     private TextStateImpl() {
-        super();
         this.strategy = null;
     }
 
     public TextStateImpl(TextStateStrategy strategy) {
-        super();
         this.strategy = strategy;
-        nounMappings = Lists.mutable.empty();
-        phraseMappings = Lists.mutable.empty();
-        wordAbbreviations = SortedSets.mutable.empty();
-        phraseAbbreviations = SortedSets.mutable.empty();
+        this.nounMappings = Lists.mutable.empty();
+        this.phraseMappings = Lists.mutable.empty();
         this.strategy.setState(this);
     }
 
@@ -84,7 +77,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public ImmutableList<PhraseMapping> getPhraseMappings() {
-        return phraseMappings.toImmutableList();
+        return this.phraseMappings.toImmutableList();
     }
 
     public ImmutableList<PhraseMapping> getPhraseMappingsByNounMapping(NounMapping nounMapping) {
@@ -92,7 +85,7 @@ public class TextStateImpl extends AbstractState implements TextState {
         MutableList<PhraseMapping> result = Lists.mutable.empty();
 
         for (Phrase phrase : nounMapping.getPhrases()) {
-            result.addAll(phraseMappings.select(pm -> pm.getPhrases().contains(phrase)));
+            result.addAll(this.phraseMappings.select(pm -> pm.getPhrases().contains(phrase)));
         }
 
         return result.toImmutable();
@@ -100,15 +93,15 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public PhraseMapping getPhraseMappingByNounMapping(NounMapping nounMapping) {
-        ImmutableList<PhraseMapping> phraseMappingsByNounMapping = getPhraseMappingsByNounMapping(nounMapping);
+        ImmutableList<PhraseMapping> phraseMappingsByNounMapping = this.getPhraseMappingsByNounMapping(nounMapping);
         assert (!phraseMappingsByNounMapping.isEmpty()) : "Every noun mapping should be connected to a phrase mapping";
         return phraseMappingsByNounMapping.get(0);
     }
 
     @Override
     public ImmutableList<NounMapping> getNounMappingsByPhraseMapping(PhraseMapping phraseMapping) {
-        return getNounMappings().select(nm -> Comparators.collectionsEqualsAnyOrder(phraseMapping.getPhrases().castToCollection(), nm.getPhrases()
-                .castToCollection()));
+        return this.getNounMappings()
+                .select(nm -> Comparators.collectionsEqualsAnyOrder(phraseMapping.getPhrases().castToCollection(), nm.getPhrases().castToCollection()));
     }
 
     /**
@@ -119,7 +112,7 @@ public class TextStateImpl extends AbstractState implements TextState {
      */
     @Override
     public ImmutableList<NounMapping> getNounMappingsOfKind(MappingKind kind) {
-        return getNounMappings().select(nounMappingIsOfKind(kind)).toImmutable();
+        return this.getNounMappings().select(this.nounMappingIsOfKind(kind)).toImmutable();
     }
 
     @Override
@@ -130,7 +123,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public void mergeNounMappings(NounMapping nounMapping, NounMapping otherNounMapping, Claimant claimant, ImmutableList<Word> referenceWords) {
-        strategy.mergeNounMappings(nounMapping, otherNounMapping, referenceWords, null, nounMapping.getKind(), claimant, nounMapping.getProbabilityForKind(
+        this.strategy.mergeNounMappings(nounMapping, otherNounMapping, referenceWords, null, nounMapping.getKind(), claimant, nounMapping.getProbabilityForKind(
                 nounMapping.getKind()));
     }
 
@@ -144,7 +137,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public ImmutableList<NounMapping> getMappingsThatCouldBeOfKind(Word word, MappingKind kind) {
-        return getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForKind(kind) > 0);
+        return this.getNounMappingsByWord(word).select(mapping -> mapping.getProbabilityForKind(kind) > 0);
     }
 
     @Override
@@ -154,11 +147,11 @@ public class TextStateImpl extends AbstractState implements TextState {
         }
 
         if (kinds.length < 2) {
-            return getNounMappingsOfKind(kinds[0]);
+            return this.getNounMappingsOfKind(kinds[0]);
         }
 
         MutableList<NounMapping> result = Lists.mutable.empty();
-        ImmutableList<NounMapping> mappings = getNounMappingsByWord(word);
+        ImmutableList<NounMapping> mappings = this.getNounMappingsByWord(word);
 
         for (NounMapping mapping : mappings) {
             ImmutableList<Double> probabilities = Lists.immutable.with(kinds).collect(mapping::getProbabilityForKind);
@@ -178,45 +171,27 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public ImmutableList<NounMapping> getNounMappingsByWord(Word word) {
-        return getNounMappings().select(nm -> nm.getWords().contains(word));
+        return this.getNounMappings().select(nm -> nm.getWords().contains(word));
     }
 
     @Override
     public ImmutableList<NounMapping> getNounMappingsByWordAndKind(Word word, MappingKind kind) {
-        return getNounMappings().select(n -> n.getWords().contains(word)).select(nounMappingIsOfKind(kind)).toImmutable();
+        return this.getNounMappings().select(n -> n.getWords().contains(word)).select(this.nounMappingIsOfKind(kind)).toImmutable();
     }
 
     @Override
     public boolean isWordContainedByMappingKind(Word word, MappingKind kind) {
-        return getNounMappings().select(n -> n.getWords().contains(word)).anySatisfy(nounMappingIsOfKind(kind));
+        return this.getNounMappings().select(n -> n.getWords().contains(word)).anySatisfy(this.nounMappingIsOfKind(kind));
     }
 
     @Override
     public ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference) {
-        return strategy.getNounMappingsWithSimilarReference(reference);
-    }
-
-    @Override
-    public ImmutableSortedSet<WordAbbreviation> getWordAbbreviations() {
-        return wordAbbreviations.toImmutable();
-    }
-
-    @Override
-    public ImmutableSortedSet<PhraseAbbreviation> getPhraseAbbreviations() {
-        return phraseAbbreviations.toImmutable();
-    }
-
-    protected boolean addWordAbbreviation(WordAbbreviation wordAbbreviation) {
-        return this.wordAbbreviations.add(wordAbbreviation);
-    }
-
-    protected boolean addPhraseAbbreviation(PhraseAbbreviation phraseAbbreviation) {
-        return this.phraseAbbreviations.add(phraseAbbreviation);
+        return this.strategy.getNounMappingsWithSimilarReference(reference);
     }
 
     @Override
     public NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant) {
-        return strategy.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant, nounMapping
+        return this.strategy.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant, nounMapping
                 .getProbabilityForKind(nounMapping.getKind()));
 
     }
@@ -224,7 +199,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     @Override
     public void mergePhraseMappingsAndNounMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping,
             MutableList<Pair<NounMapping, NounMapping>> similarNounMappings, Claimant claimant) {
-        mergePhraseMappings(phraseMapping, similarPhraseMapping);
+        this.mergePhraseMappings(phraseMapping, similarPhraseMapping);
         for (Pair<NounMapping, NounMapping> nounMappingPair : similarNounMappings) {
             this.mergeNounMappings(nounMappingPair.first(), nounMappingPair.second(), claimant);
         }
@@ -247,7 +222,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public NounMapping getNounMappingByWord(Word word) {
-        var result = getNounMappings().select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
+        var result = this.getNounMappings().select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
 
         assert (result.size() <= 1) : "A word should only contained by one noun mapping";
         if (result.isEmpty()) {
@@ -264,7 +239,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     @Override
     public ImmutableList<String> getListOfReferences(MappingKind kind) {
         MutableSortedSet<String> referencesOfKind = SortedSets.mutable.empty();
-        var kindMappings = getNounMappingsOfKind(kind);
+        var kindMappings = this.getNounMappingsOfKind(kind);
         for (NounMapping nnm : kindMappings) {
             referencesOfKind.add(nnm.getReference());
         }
@@ -276,26 +251,28 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     void addNounMappingAddPhraseMapping(NounMapping nounMapping) {
-        addNounMappingToState(nounMapping);
-        if (phraseMappings.anySatisfy(it -> {
-            var sortedIt = (SortedIterable<Phrase>) it.getPhrases();
-            return Comparators.collectionsIdentityAnyOrder(sortedIt, nounMapping.getPhrases());
-        }))
+        this.addNounMappingToState(nounMapping);
+        if (this.phraseMappings.anySatisfy(it -> {
+            SortedIterable<Phrase> sortedIt = it.getPhrases();
+            SortedIterable<Phrase> phrases = nounMapping.getPhrases();
+            return Comparators.collectionsIdentityAnyOrder(sortedIt, phrases);
+        })) {
             return;
+        }
         PhraseMapping phraseMappingImpl = new PhraseMappingImpl(nounMapping.getPhrases());
-        phraseMappings.add(phraseMappingImpl);
+        this.phraseMappings.add(phraseMappingImpl);
     }
 
     @Override
     public void removeNounMapping(NounMapping nounMapping, NounMapping replacement) {
-        PhraseMapping phraseMapping = getPhraseMappingByNounMapping(nounMapping);
+        PhraseMapping phraseMapping = this.getPhraseMappingByNounMapping(nounMapping);
 
-        var otherNounMappings = getNounMappingsThatBelongToTheSamePhraseMapping(nounMapping);
+        var otherNounMappings = this.getNounMappingsThatBelongToTheSamePhraseMapping(nounMapping);
         if (!otherNounMappings.isEmpty()) {
             var phrases = nounMapping.getPhrases().select(p -> !otherNounMappings.flatCollect(NounMapping::getPhrases).contains(p));
             phrases.forEach(phraseMapping::removePhrase);
         }
-        removeNounMappingFromState(nounMapping, replacement);
+        this.removeNounMappingFromState(nounMapping, replacement);
     }
 
     private void addNounMappingToState(NounMapping nounMapping) {
@@ -334,7 +311,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public String toString() {
-        return "TextExtractionState [NounMappings: \n" + getNounMappings() + "\n PhraseMappings: \n" + getPhraseMappings() + "]";
+        return "TextExtractionState [NounMappings: \n" + this.getNounMappings() + "\n PhraseMappings: \n" + this.getPhraseMappings() + "]";
     }
 
     @Override
