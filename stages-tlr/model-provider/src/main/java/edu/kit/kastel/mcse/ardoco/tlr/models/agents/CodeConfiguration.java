@@ -30,9 +30,9 @@ public record CodeConfiguration(File code, CodeConfigurationType type) {
     }
 
     public List<Extractor> extractors() {
-        if (type == CodeConfigurationType.DIRECTORY) {
+        if (this.type == CodeConfigurationType.DIRECTORY) {
             CodeItemRepository codeItemRepository = new CodeItemRepository();
-            CodeExtractor codeExtractor = new AllLanguagesExtractor(codeItemRepository, code.getAbsolutePath());
+            CodeExtractor codeExtractor = new AllLanguagesExtractor(codeItemRepository, this.code.getAbsolutePath());
             return List.of(codeExtractor);
         }
         throw new IllegalStateException("CodeConfigurationType not supported");
