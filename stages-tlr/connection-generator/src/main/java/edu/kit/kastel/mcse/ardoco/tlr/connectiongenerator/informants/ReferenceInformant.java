@@ -11,6 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.Recomme
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -27,14 +28,14 @@ public class ReferenceInformant extends Informant {
 
     @Override
     public void process() {
-        DataRepository dataRepository = getDataRepository();
+        DataRepository dataRepository = this.getDataRepository();
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
-            findRecommendedInstancesFromNounMappingsThatAreSimilarToInstances(modelState, recommendationState, textState);
+            this.findRecommendedInstancesFromNounMappingsThatAreSimilarToInstances(modelState, recommendationState, textState);
         }
     }
 
@@ -45,10 +46,10 @@ public class ReferenceInformant extends Informant {
     private void findRecommendedInstancesFromNounMappingsThatAreSimilarToInstances(LegacyModelExtractionState modelState,
             RecommendationState recommendationState, TextState textState) {
         for (ModelInstance instance : modelState.getInstances()) {
-            var similarToInstanceMappings = getSimilarNounMappings(instance, textState);
+            var similarToInstanceMappings = this.getSimilarNounMappings(instance, textState);
 
             for (NounMapping similarNameMapping : similarToInstanceMappings) {
-                recommendationState.addRecommendedInstance(similarNameMapping.getReference(), this, probability, similarToInstanceMappings);
+                recommendationState.addRecommendedInstance(similarNameMapping.getReference(), this, this.probability, similarToInstanceMappings);
             }
         }
 
@@ -56,7 +57,7 @@ public class ReferenceInformant extends Informant {
 
     private ImmutableList<NounMapping> getSimilarNounMappings(ModelInstance instance, TextState textState) {
         return textState.getNounMappingsOfKind(MappingKind.NAME)
-                .select(nounMapping -> getMetaData().getSimilarityUtils().isNounMappingSimilarToModelInstance(nounMapping, instance));
+                .select(nounMapping -> SimilarityUtils.getInstance().isNounMappingSimilarToModelInstance(nounMapping, instance));
     }
 
     @Override

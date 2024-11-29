@@ -8,6 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.Leg
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -25,7 +26,7 @@ public class InstantConnectionInformant extends Informant {
 
     @Override
     public void process() {
-        DataRepository dataRepository = getDataRepository();
+        DataRepository dataRepository = this.getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);
@@ -35,8 +36,8 @@ public class InstantConnectionInformant extends Informant {
             var recommendationState = recommendationStates.getRecommendationState(metamodel);
             var connectionState = connectionStates.getConnectionState(metamodel);
 
-            findNamesOfModelInstancesInSupposedMappings(modelState, recommendationState, connectionState);
-            createLinksForEqualOrSimilarRecommendedInstances(modelState, recommendationState, connectionState);
+            this.findNamesOfModelInstancesInSupposedMappings(modelState, recommendationState, connectionState);
+            this.createLinksForEqualOrSimilarRecommendedInstances(modelState, recommendationState, connectionState);
         }
     }
 
@@ -47,12 +48,11 @@ public class InstantConnectionInformant extends Informant {
     private void findNamesOfModelInstancesInSupposedMappings(LegacyModelExtractionState modelState, RecommendationState recommendationState,
             ConnectionState connectionState) {
         var recommendedInstances = recommendationState.getRecommendedInstances();
-        var similarityUtils = getMetaData().getSimilarityUtils();
         for (ModelInstance instance : modelState.getInstances()) {
-            var mostLikelyRi = similarityUtils.getMostRecommendedInstancesToInstanceByReferences(instance, recommendedInstances);
+            var mostLikelyRi = SimilarityUtils.getInstance().getMostRecommendedInstancesToInstanceByReferences(instance, recommendedInstances);
 
             for (var recommendedInstance : mostLikelyRi) {
-                var riProbability = recommendedInstance.getTypeMappings().isEmpty() ? probabilityWithoutType : probability;
+                var riProbability = recommendedInstance.getTypeMappings().isEmpty() ? this.probabilityWithoutType : this.probability;
                 connectionState.addToLinks(recommendedInstance, instance, this, riProbability);
             }
         }
@@ -62,8 +62,8 @@ public class InstantConnectionInformant extends Informant {
             ConnectionState connectionState) {
         for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
             var sameInstances = modelState.getInstances()
-                    .select(instance -> getMetaData().getSimilarityUtils().isRecommendedInstanceSimilarToModelInstance(recommendedInstance, instance));
-            sameInstances.forEach(instance -> connectionState.addToLinks(recommendedInstance, instance, this, probability));
+                    .select(instance -> SimilarityUtils.getInstance().isRecommendedInstanceSimilarToModelInstance(recommendedInstance, instance));
+            sameInstances.forEach(instance -> connectionState.addToLinks(recommendedInstance, instance, this, this.probability));
         }
     }
 

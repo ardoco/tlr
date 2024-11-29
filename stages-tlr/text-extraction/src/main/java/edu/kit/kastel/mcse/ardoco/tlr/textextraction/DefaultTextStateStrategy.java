@@ -15,17 +15,16 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
-import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 @Deterministic
 public abstract class DefaultTextStateStrategy implements TextStateStrategy {
-    protected final GlobalConfiguration globalConfiguration;
     protected TextStateImpl textState;
 
-    protected DefaultTextStateStrategy(GlobalConfiguration globalConfiguration) {
-        this.globalConfiguration = globalConfiguration;
+    protected DefaultTextStateStrategy() {
+        // NOP
     }
 
     @Override
@@ -33,11 +32,10 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
         if (this.textState != null) {
             throw new IllegalStateException("The text state is already set");
         }
-        if (textState instanceof TextStateImpl) {
-            this.textState = (TextStateImpl) textState;
-        } else {
+        if (!(textState instanceof TextStateImpl)) {
             throw new IllegalArgumentException("The text state must be an instance of TextStateImpl");
         }
+        this.textState = (TextStateImpl) textState;
     }
 
     public TextStateImpl getTextState() {
@@ -65,9 +63,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
 
     @Override
     public ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference) {
-        return this.textState.getNounMappings()
-                .select(nm -> this.globalConfiguration.getSimilarityUtils().areWordsSimilar(reference, nm.getReference()))
-                .toImmutable();
+        return this.textState.getNounMappings().select(nm -> SimilarityUtils.getInstance().areWordsSimilar(reference, nm.getReference())).toImmutable();
     }
 
     @Override
@@ -105,11 +101,10 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
                 if (fittingNounMappings.isEmpty()) {
                     continue;
                 }
-                if (fittingNounMappings.size() == 1) {
-                    nounMappingToMerge = fittingNounMappings.get(0);
-                } else {
+                if (fittingNounMappings.size() != 1) {
                     throw new IllegalStateException();
                 }
+                nounMappingToMerge = fittingNounMappings.get(0);
             }
 
             assert this.textState.getNounMappings().contains(nounMappingToMerge);

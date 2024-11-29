@@ -12,6 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.common.similarity.PhraseMappingAggregatorStrategy;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.Comparators;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -30,8 +31,8 @@ public class MappingCombinerInformant extends Informant {
 
     @Override
     public void process() {
-        TextState textState = DataRepositoryHelper.getTextState(getDataRepository());
-        combineSimilarPhraseMappings(textState);
+        TextState textState = DataRepositoryHelper.getTextState(this.getDataRepository());
+        this.combineSimilarPhraseMappings(textState);
     }
 
     private void combineSimilarPhraseMappings(TextState textState) {
@@ -39,14 +40,14 @@ public class MappingCombinerInformant extends Informant {
         ImmutableList<PhraseMapping> phraseMappings = textState.getPhraseMappings();
 
         for (PhraseMapping phraseMapping : phraseMappings) {
-            ImmutableList<PhraseMapping> similarPhraseMappings = phraseMappings.select(p -> getMetaData().getSimilarityUtils()
-                    .getPhraseMappingSimilarity(textState, phraseMapping, p, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > minCosineSimilarity);
+            ImmutableList<PhraseMapping> similarPhraseMappings = phraseMappings.select(p -> SimilarityUtils.getInstance()
+                    .getPhraseMappingSimilarity(textState, phraseMapping, p, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > this.minCosineSimilarity);
 
             // Remove the phrase mapping from the list of similar phrase mappings
             // Comment: This would break the logic but seems to be logical ..
             // similarPhraseMappings = similarPhraseMappings.newWithout(phraseMapping);
 
-            processPhraseMappingForSimilarPhraseMappings(textState, similarPhraseMappings, phraseMapping);
+            this.processPhraseMappingForSimilarPhraseMappings(textState, similarPhraseMappings, phraseMapping);
         }
 
     }
@@ -61,13 +62,13 @@ public class MappingCombinerInformant extends Informant {
 
             if (Comparators.collectionsEqualsAnyOrder(similarPhraseMapping.getPhrases().collect(Phrase::getText), phraseMapping.getPhrases()
                     .collect(Phrase::getText))) {
-                processSimilarPhraseMappingWhenEqualPhraseText(textState, phraseMapping, nounMappingsOfSimilarPhraseMapping);
+                this.processSimilarPhraseMappingWhenEqualPhraseText(textState, phraseMapping, nounMappingsOfSimilarPhraseMapping);
                 continue;
             }
 
             if (nounMappingsOfPhraseMapping.size() == nounMappingsOfSimilarPhraseMapping.size()) {
-                processSimilarPhraseMappingWhenEquallySized(textState, similarPhraseMappings, phraseMapping, nounMappingsOfPhraseMapping, similarPhraseMapping,
-                        nounMappingsOfSimilarPhraseMapping);
+                this.processSimilarPhraseMappingWhenEquallySized(textState, similarPhraseMappings, phraseMapping, nounMappingsOfPhraseMapping,
+                        similarPhraseMapping, nounMappingsOfSimilarPhraseMapping);
             }
         }
     }
@@ -78,7 +79,7 @@ public class MappingCombinerInformant extends Informant {
         MutableList<Pair<NounMapping, NounMapping>> similarNounMappings = Lists.mutable.empty();
 
         for (NounMapping nounMapping : nounMappingsOfPhraseMapping) {
-            NounMapping similarNounMapping = getMostSimilarNounMappingOverThreshold(nounMapping, nounMappingsOfSimilarPhraseMapping);
+            NounMapping similarNounMapping = this.getMostSimilarNounMappingOverThreshold(nounMapping, nounMappingsOfSimilarPhraseMapping);
             if (similarNounMapping != null) {
                 similarNounMappings.add(new Pair<>(nounMapping, similarNounMapping));
             }
@@ -102,7 +103,7 @@ public class MappingCombinerInformant extends Informant {
                         .contains(nounMapping)) {
                     continue;
                 }
-                if (getMetaData().getSimilarityUtils().areNounMappingsSimilar(nounMapping, nounMappingOfSimilarPhraseMapping)) {
+                if (SimilarityUtils.getInstance().areNounMappingsSimilar(nounMapping, nounMappingOfSimilarPhraseMapping)) {
                     textState.mergeNounMappings(nounMapping, nounMappingOfSimilarPhraseMapping, this);
                 }
             }
@@ -114,7 +115,7 @@ public class MappingCombinerInformant extends Informant {
         MutableList<NounMapping> similarNounMappings = Lists.mutable.empty();
 
         for (NounMapping nounMappingOfSimilarPhraseMapping : nounMappingsOfSimilarPhraseMapping) {
-            if (getMetaData().getSimilarityUtils().areNounMappingsSimilar(nounMapping, nounMappingOfSimilarPhraseMapping)) {
+            if (SimilarityUtils.getInstance().areNounMappingsSimilar(nounMapping, nounMappingOfSimilarPhraseMapping)) {
                 similarNounMappings.add(nounMappingOfSimilarPhraseMapping);
             }
         }

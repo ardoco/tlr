@@ -41,7 +41,7 @@ public class TextExtraction extends AbstractExecutionStage {
         var dataRepository = this.getDataRepository();
         var optionalTextState = dataRepository.getData(TextState.ID, TextStateImpl.class);
         if (optionalTextState.isEmpty()) {
-            TextStateStrategy tts = new OriginalTextStateStrategy(dataRepository.getGlobalConfiguration());
+            TextStateStrategy tts = new OriginalTextStateStrategy();
             var textState = new TextStateImpl(tts);
             dataRepository.addData(TextState.ID, textState);
         }

@@ -17,13 +17,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
-import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
+/**
+ * @deprecated not used
+ */
+@Deprecated
 public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy {
 
-    public PhraseConcerningTextStateStrategy(GlobalConfiguration globalConfiguration) {
-        super(globalConfiguration);
+    public PhraseConcerningTextStateStrategy() {
     }
 
     @Override
@@ -60,14 +62,15 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         var mergedRawMap = Arrays.stream(MappingKind.values())
                 .collect(Collectors.toMap( //
                         kind -> kind, //
-                        kind -> putAllConfidencesTogether(distribution1.get(kind), distribution2.get(kind)) //
+                        kind -> this.putAllConfidencesTogether(distribution1.get(kind), distribution2.get(kind)) //
                 ));
         MutableSortedMap<MappingKind, Confidence> mergedDistribution = SortedMaps.mutable.withSortedMap(mergedRawMap);
 
         MutableList<String> mergedSurfaceForms = firstNounMapping.getSurfaceForms().toList();
         for (var surface : secondNounMapping.getSurfaceForms()) {
-            if (mergedSurfaceForms.contains(surface))
+            if (mergedSurfaceForms.contains(surface)) {
                 continue;
+            }
             mergedSurfaceForms.add(surface);
         }
 
@@ -87,7 +90,7 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
             if (firstNounMapping.getReference().equalsIgnoreCase(secondNounMapping.getReference())) {
                 mergedReference = firstNounMapping.getReference();
             } else {
-                mergedReference = calculateNounMappingReference(mergedReferenceWords);
+                mergedReference = this.calculateNounMappingReference(mergedReferenceWords);
             }
         }
 
@@ -102,7 +105,8 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
     @Override
     public NounMappingImpl mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability) {
-        var mergedNounMapping = mergeNounMappingsStateless(firstNounMapping, secondNounMapping, referenceWords, reference, mappingKind, claimant, probability);
+        var mergedNounMapping = this.mergeNounMappingsStateless(firstNounMapping, secondNounMapping, referenceWords, reference, mappingKind, claimant,
+                probability);
 
         this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
         this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);

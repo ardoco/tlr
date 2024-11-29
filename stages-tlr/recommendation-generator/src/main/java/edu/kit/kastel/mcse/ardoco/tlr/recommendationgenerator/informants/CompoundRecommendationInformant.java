@@ -15,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
@@ -32,7 +33,7 @@ public class CompoundRecommendationInformant extends Informant {
 
     @Override
     public void process() {
-        DataRepository dataRepository = getDataRepository();
+        DataRepository dataRepository = this.getDataRepository();
         var modelStatesData = DataRepositoryHelper.getModelStatesData(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
@@ -41,9 +42,9 @@ public class CompoundRecommendationInformant extends Informant {
             var modelState = modelStatesData.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
 
-            createRecommendationInstancesFromCompoundNounMappings(textState, recommendationState, modelState);
-            findMoreCompoundsForRecommendationInstances(textState, recommendationState, modelState);
-            findSpecialNamedEntitities(textState, recommendationState);
+            this.createRecommendationInstancesFromCompoundNounMappings(textState, recommendationState, modelState);
+            this.findMoreCompoundsForRecommendationInstances(textState, recommendationState, modelState);
+            this.findSpecialNamedEntitities(textState, recommendationState);
         }
     }
 
@@ -54,8 +55,8 @@ public class CompoundRecommendationInformant extends Informant {
             LegacyModelExtractionState modelState) {
         for (var nounMapping : textState.getNounMappings()) {
             if (nounMapping.isCompound()) {
-                var typeMappings = getRelatedTypeMappings(nounMapping, textState);
-                addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
+                var typeMappings = this.getRelatedTypeMappings(nounMapping, textState);
+                this.addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
             }
         }
     }
@@ -69,10 +70,10 @@ public class CompoundRecommendationInformant extends Informant {
         for (var nounMapping : textState.getNounMappings()) {
             for (var word : nounMapping.getWords()) {
                 var prevWord = word.getPreWord();
-                addRecommendedInstanceIfCompoundWithOtherWord(nounMapping, prevWord, textState, recommendationState, modelState);
+                this.addRecommendedInstanceIfCompoundWithOtherWord(nounMapping, prevWord, textState, recommendationState, modelState);
 
                 var nextWord = word.getNextWord();
-                addRecommendedInstanceIfCompoundWithOtherWord(nounMapping, nextWord, textState, recommendationState, modelState);
+                this.addRecommendedInstanceIfCompoundWithOtherWord(nounMapping, nextWord, textState, recommendationState, modelState);
             }
         }
     }
@@ -81,7 +82,7 @@ public class CompoundRecommendationInformant extends Informant {
      * Find words that use CamelCase or snake_case.
      */
     private void findSpecialNamedEntitities(TextState textState, RecommendationState recommendationState) {
-        findSpecialNamedEntitiesInNounMappings(textState.getNounMappingsOfKind(MappingKind.NAME), recommendationState);
+        this.findSpecialNamedEntitiesInNounMappings(textState.getNounMappingsOfKind(MappingKind.NAME), recommendationState);
     }
 
     private void findSpecialNamedEntitiesInNounMappings(ImmutableList<NounMapping> nounMappings, RecommendationState recommendationState) {
@@ -90,7 +91,8 @@ public class CompoundRecommendationInformant extends Informant {
                 var wordText = word.getText();
                 if (CommonUtilities.isCamelCasedWord(wordText) || CommonUtilities.nameIsSnakeCased(wordText)) {
                     var localNounMappings = Lists.immutable.of(nounMapping);
-                    recommendationState.addRecommendedInstance(nounMapping.getReference(), "", this, confidence, localNounMappings, Lists.immutable.empty());
+                    recommendationState.addRecommendedInstance(nounMapping.getReference(), "", this, this.confidence, localNounMappings, Lists.immutable
+                            .empty());
                 }
             }
         }
@@ -99,12 +101,12 @@ public class CompoundRecommendationInformant extends Informant {
     private void addRecommendedInstance(NounMapping nounMapping, ImmutableList<NounMapping> typeMappings, RecommendationState recommendationState,
             LegacyModelExtractionState modelState) {
         var nounMappings = Lists.immutable.of(nounMapping);
-        var types = getSimilarModelTypes(typeMappings, modelState);
+        var types = this.getSimilarModelTypes(typeMappings, modelState);
         if (types.isEmpty()) {
-            recommendationState.addRecommendedInstance(nounMapping.getReference(), "", this, confidence, nounMappings, typeMappings);
+            recommendationState.addRecommendedInstance(nounMapping.getReference(), "", this, this.confidence, nounMappings, typeMappings);
         } else {
             for (var type : types) {
-                recommendationState.addRecommendedInstance(nounMapping.getReference(), type, this, confidence, nounMappings, typeMappings);
+                recommendationState.addRecommendedInstance(nounMapping.getReference(), type, this, this.confidence, nounMappings, typeMappings);
             }
         }
     }
@@ -114,11 +116,11 @@ public class CompoundRecommendationInformant extends Informant {
         var typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
         for (var typeMapping : typeMappings) {
             var currSimilarTypes = Lists.immutable.fromStream(typeIdentifiers.stream()
-                    .filter(typeId -> getMetaData().getSimilarityUtils().areWordsSimilar(typeId, typeMapping.getReference())));
+                    .filter(typeId -> SimilarityUtils.getInstance().areWordsSimilar(typeId, typeMapping.getReference())));
             similarModelTypes.addAll(currSimilarTypes.toList());
             for (var word : typeMapping.getWords()) {
                 currSimilarTypes = Lists.immutable.fromStream(typeIdentifiers.stream()
-                        .filter(typeId -> getMetaData().getSimilarityUtils().areWordsSimilar(typeId, word.getLemma())));
+                        .filter(typeId -> SimilarityUtils.getInstance().areWordsSimilar(typeId, word.getLemma())));
                 similarModelTypes.addAll(currSimilarTypes.toList());
             }
         }
@@ -144,7 +146,7 @@ public class CompoundRecommendationInformant extends Informant {
         if (word.getPosTag().isNoun()) {
             var typeMappings = textState.getMappingsThatCouldBeOfKind(word, MappingKind.TYPE);
             if (!typeMappings.isEmpty()) {
-                addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
+                this.addRecommendedInstance(nounMapping, typeMappings, recommendationState, modelState);
             }
         }
     }
