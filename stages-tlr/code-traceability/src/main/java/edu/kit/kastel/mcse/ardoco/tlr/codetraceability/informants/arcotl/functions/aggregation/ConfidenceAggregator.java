@@ -6,11 +6,12 @@ import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.Confidence;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.EndpointTupleRepo;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.NodeResult;
-import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.SamCodeEndpointTuple;
 
 public abstract class ConfidenceAggregator extends Aggregation {
 
@@ -18,8 +19,8 @@ public abstract class ConfidenceAggregator extends Aggregation {
     public NodeResult calculateConfidences(ArchitectureModel archModel, CodeModel codeModel, List<NodeResult> childrenResults) {
         NodeResult nodeResult = new NodeResult();
         EndpointTupleRepo endpointTupleRepo = new EndpointTupleRepo(archModel, codeModel);
-        for (SamCodeEndpointTuple endpointTuple : endpointTupleRepo.getEndpointTuples()) {
-            Confidence confidence = aggregateConfidences(getConfidences(childrenResults, endpointTuple));
+        for (Pair<ArchitectureItem, CodeCompilationUnit> endpointTuple : endpointTupleRepo.getEndpointTuples()) {
+            Confidence confidence = this.aggregateConfidences(this.getConfidences(childrenResults, endpointTuple));
             nodeResult.add(endpointTuple, confidence);
         }
         return nodeResult;
@@ -40,7 +41,7 @@ public abstract class ConfidenceAggregator extends Aggregation {
      * @throws IllegalStateException if not all of the specified
      *                               node results have a calculated confidence for the specified endpoint tuple
      */
-    private List<Confidence> getConfidences(List<NodeResult> results, EndpointTuple endpointTuple) {
+    private List<Confidence> getConfidences(List<NodeResult> results, Pair<ArchitectureItem, CodeCompilationUnit> endpointTuple) {
         List<Confidence> confidences = new ArrayList<>();
         for (NodeResult result : results) {
             Confidence confidence = result.getConfidence(endpointTuple);

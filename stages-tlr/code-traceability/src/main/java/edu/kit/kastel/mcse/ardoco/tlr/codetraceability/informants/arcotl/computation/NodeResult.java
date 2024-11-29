@@ -13,9 +13,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 
 /**
  * The result of a computation node. A computation node's final result are the
@@ -24,7 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 @Deterministic
 public class NodeResult {
 
-    private final Map<SamCodeEndpointTuple, Confidence> confidenceMap;
+    private final Map<Pair<ArchitectureItem, CodeCompilationUnit>, Confidence> confidenceMap;
 
     /**
      * Creates a new computation node result. It is initially empty, so the
@@ -32,14 +32,14 @@ public class NodeResult {
      * been calculated.
      */
     public NodeResult() {
-        confidenceMap = new LinkedHashMap<>();
+        this.confidenceMap = new LinkedHashMap<>();
     }
 
     public NodeResult(ArchitectureModel archModel, CodeModel codeModel) {
-        confidenceMap = new LinkedHashMap<>();
+        this.confidenceMap = new LinkedHashMap<>();
         EndpointTupleRepo endpointTupleRepo = new EndpointTupleRepo(archModel, codeModel);
-        for (SamCodeEndpointTuple endpointTuple : endpointTupleRepo.getEndpointTuples()) {
-            add(endpointTuple, new Confidence());
+        for (var endpointTuple : endpointTupleRepo.getEndpointTuples()) {
+            this.add(endpointTuple, new Confidence());
         }
     }
 
@@ -52,16 +52,16 @@ public class NodeResult {
      *                      returned
      * @return the confidence of the endpoint tuple, or null if it doesn't exist yet
      */
-    public Confidence getConfidence(EndpointTuple endpointTuple) {
-        return confidenceMap.get(endpointTuple);
+    public Confidence getConfidence(Pair<ArchitectureItem, CodeCompilationUnit> endpointTuple) {
+        return this.confidenceMap.get(endpointTuple);
     }
 
     public Confidence getBestConfidence(Entity endpoint) {
         Confidence max = new Confidence();
-        for (var entry : confidenceMap.entrySet()) {
-            SamCodeEndpointTuple tuple = entry.getKey();
+        for (var entry : this.confidenceMap.entrySet()) {
+            Pair<ArchitectureItem, CodeCompilationUnit> tuple = entry.getKey();
             Confidence confidence = entry.getValue();
-            if (tuple.hasEndpoint(endpoint) && confidence.compareTo(max) > 0) {
+            if (tuple.hasElement(endpoint) && confidence.compareTo(max) > 0) {
                 max = confidence;
             }
         }
@@ -70,10 +70,10 @@ public class NodeResult {
 
     public NodeResult getEndpointTuples(Entity endpoint, Confidence confidence) {
         NodeResult result = new NodeResult();
-        for (var entry : confidenceMap.entrySet()) {
-            SamCodeEndpointTuple endpointTuple = entry.getKey();
+        for (var entry : this.confidenceMap.entrySet()) {
+            Pair<ArchitectureItem, CodeCompilationUnit> endpointTuple = entry.getKey();
             Confidence otherConfidence = entry.getValue();
-            if (endpointTuple.hasEndpoint(endpoint) && confidence.equals(otherConfidence)) {
+            if (endpointTuple.hasElement(endpoint) && confidence.equals(otherConfidence)) {
                 result.add(endpointTuple, otherConfidence);
             }
         }
@@ -82,11 +82,11 @@ public class NodeResult {
 
     public SortedSet<Entity> getLinkedEndpoints(Entity endpoint) {
         SortedSet<Entity> linkedEndpoints = new TreeSet<>();
-        for (var entry : confidenceMap.entrySet()) {
-            SamCodeEndpointTuple tuple = entry.getKey();
+        for (var entry : this.confidenceMap.entrySet()) {
+            Pair<ArchitectureItem, CodeCompilationUnit> tuple = entry.getKey();
             Confidence confidence = entry.getValue();
-            if (tuple.hasEndpoint(endpoint) && confidence.hasValue()) {
-                linkedEndpoints.add(tuple.getOtherEndpoint(endpoint));
+            if (tuple.hasElement(endpoint) && confidence.hasValue()) {
+                linkedEndpoints.add((Entity) tuple.getOtherElement(endpoint));
             }
         }
         return linkedEndpoints;
@@ -102,12 +102,12 @@ public class NodeResult {
      */
     public Set<SamCodeTraceLink> getTraceLinks() {
         Set<SamCodeTraceLink> traceLinks = new LinkedHashSet<>();
-        for (var entry : confidenceMap.entrySet()) {
+        for (var entry : this.confidenceMap.entrySet()) {
             Confidence confidence = entry.getValue();
             if (confidence.hasValue()) {
-                SamCodeEndpointTuple endpointTuple = entry.getKey();
-                ArchitectureItem architectureEndpoint = endpointTuple.getArchitectureEndpoint();
-                CodeCompilationUnit codeEndpoint = endpointTuple.getCodeEndpoint();
+                Pair<ArchitectureItem, CodeCompilationUnit> endpointTuple = entry.getKey();
+                ArchitectureItem architectureEndpoint = endpointTuple.first();
+                CodeCompilationUnit codeEndpoint = endpointTuple.second();
                 traceLinks.add(new SamCodeTraceLink(architectureEndpoint, codeEndpoint));
             }
         }
@@ -115,10 +115,10 @@ public class NodeResult {
     }
 
     public boolean hasTraceLink(Entity endpoint) {
-        for (var entry : confidenceMap.entrySet()) {
-            EndpointTuple tuple = entry.getKey();
+        for (var entry : this.confidenceMap.entrySet()) {
+            Pair<ArchitectureItem, CodeCompilationUnit> tuple = entry.getKey();
             Confidence confidence = entry.getValue();
-            if (tuple.hasEndpoint(endpoint) && confidence.hasValue()) {
+            if (tuple.hasElement(endpoint) && confidence.hasValue()) {
                 return true;
             }
         }
@@ -127,10 +127,10 @@ public class NodeResult {
 
     public NodeResult getResultForEndpoint(Entity endpoint) {
         NodeResult result = new NodeResult();
-        for (var entry : confidenceMap.entrySet()) {
-            SamCodeEndpointTuple tuple = entry.getKey();
+        for (var entry : this.confidenceMap.entrySet()) {
+            Pair<ArchitectureItem, CodeCompilationUnit> tuple = entry.getKey();
             Confidence confidence = entry.getValue();
-            if (tuple.hasEndpoint(endpoint)) {
+            if (tuple.hasElement(endpoint)) {
                 result.add(tuple, confidence);
             }
         }
@@ -139,8 +139,8 @@ public class NodeResult {
 
     public NodeResult filter(NodeResult resultToFilter) {
         NodeResult result = new NodeResult();
-        for (var entry : confidenceMap.entrySet()) {
-            SamCodeEndpointTuple tuple = entry.getKey();
+        for (var entry : this.confidenceMap.entrySet()) {
+            Pair<ArchitectureItem, CodeCompilationUnit> tuple = entry.getKey();
             Confidence confidence = entry.getValue();
             if (resultToFilter.getConfidence(tuple).hasValue()) {
                 result.add(tuple, new Confidence());
@@ -158,11 +158,11 @@ public class NodeResult {
      * @param endpointTuple the endpoint tuple whose confidence is to be added
      * @param confidence    the confidence of the endpoint tuple
      */
-    public void add(SamCodeEndpointTuple endpointTuple, Confidence confidence) {
-        confidenceMap.put(endpointTuple, confidence);
+    public void add(Pair<ArchitectureItem, CodeCompilationUnit> endpointTuple, Confidence confidence) {
+        this.confidenceMap.put(endpointTuple, confidence);
     }
 
     public void addAll(NodeResult partialResult) {
-        confidenceMap.putAll(partialResult.confidenceMap);
+        this.confidenceMap.putAll(partialResult.confidenceMap);
     }
 }

@@ -11,7 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.Architectu
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.NameComparisonUtils;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.Confidence;
 
@@ -21,7 +21,7 @@ public class ComponentNameResemblanceTest extends DependentHeuristic {
 
     @Override
     protected Confidence calculateConfidence(ArchitectureComponent archComponent, CodeCompilationUnit compUnit) {
-        return calculateNameResemblance(archComponent, compUnit);
+        return this.calculateNameResemblance(archComponent, compUnit);
     }
 
     @Override
@@ -29,15 +29,15 @@ public class ComponentNameResemblanceTest extends DependentHeuristic {
         if (!archInterface.getSignatures().isEmpty()) {
             return new Confidence();
         }
-        return calculateNameResemblance(archInterface, compUnit);
+        return this.calculateNameResemblance(archInterface, compUnit);
     }
 
     private Confidence calculateNameResemblance(ArchitectureItem archEndpoint, CodeCompilationUnit compUnit) {
-        if (getNodeResult().getConfidence(new EndpointTuple(archEndpoint, compUnit)).hasValue()) {
+        if (this.getNodeResult().getConfidence(new Pair<>(archEndpoint, compUnit)).hasValue()) {
             return new Confidence();
         }
         SortedSet<String> filteredCommonWords = new TreeSet<>(commonWords);
-        for (Entity ae : getArchModel().getEndpoints()) {
+        for (Entity ae : this.getArchModel().getEndpoints()) {
             filteredCommonWords = NameComparisonUtils.removeWords(filteredCommonWords, ae);
         }
         SortedSet<CodeItem> items = compUnit.getAllDataTypesAndSelf();
@@ -45,14 +45,14 @@ public class ComponentNameResemblanceTest extends DependentHeuristic {
             return new Confidence(1.0);
         }
         Confidence maxConfidence = new Confidence();
-        SortedSet<Entity> linkedEndpoints = getNodeResult().getLinkedEndpoints(archEndpoint);
+        SortedSet<Entity> linkedEndpoints = this.getNodeResult().getLinkedEndpoints(archEndpoint);
         for (Entity linkedEndpoint : linkedEndpoints) {
             CodeCompilationUnit linkedCompUnit = (CodeCompilationUnit) linkedEndpoint;
             if (InheritLinks.areInDifferentPackages(compUnit, linkedCompUnit) || !areSimilar(items, linkedCompUnit.getAllDataTypesAndSelf(),
                     filteredCommonWords)) {
                 continue;
             }
-            Confidence extendedConfidence = getNodeResult().getConfidence(new EndpointTuple(archEndpoint, linkedCompUnit));
+            Confidence extendedConfidence = this.getNodeResult().getConfidence(new Pair<>(archEndpoint, linkedCompUnit));
             if (extendedConfidence.compareTo(maxConfidence) > 0) {
                 maxConfidence = extendedConfidence;
             }

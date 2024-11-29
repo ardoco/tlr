@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.tlr.codetraceability.informants.arcotl.computation.computationtree.Node;
 
 /**
@@ -26,7 +28,7 @@ public class ComputationResult {
      * still need to be added after they have been calculated.
      */
     public ComputationResult() {
-        resultMap = new LinkedHashMap<>();
+        this.resultMap = new LinkedHashMap<>();
     }
 
     /**
@@ -42,11 +44,11 @@ public class ComputationResult {
      * @return the confidence of the combination of computation node and endpoint
      *         tuple, or null if it doesn't exist yet
      */
-    public Confidence getConfidence(Node node, EndpointTuple endpointTuple) {
-        if (!exists(node)) {
+    public Confidence getConfidence(Node node, Pair<ArchitectureItem, CodeCompilationUnit> endpointTuple) {
+        if (!this.exists(node)) {
             return null;
         }
-        return resultMap.get(node).getConfidence(endpointTuple);
+        return this.resultMap.get(node).getConfidence(endpointTuple);
     }
 
     /**
@@ -58,7 +60,7 @@ public class ComputationResult {
      * @return the result of the computation node, or null if it doesn't exist yet
      */
     public NodeResult getNodeResult(Node node) {
-        return resultMap.get(node);
+        return this.resultMap.get(node);
     }
 
     /**
@@ -73,10 +75,10 @@ public class ComputationResult {
      *         specified computation node's result has a value
      */
     public Set<SamCodeTraceLink> getTraceLinks(Node node) {
-        if (!exists(node)) {
+        if (!this.exists(node)) {
             return new java.util.LinkedHashSet<>();
         }
-        NodeResult nodeResult = resultMap.get(node);
+        NodeResult nodeResult = this.resultMap.get(node);
         return nodeResult.getTraceLinks();
     }
 
@@ -91,10 +93,10 @@ public class ComputationResult {
      * @param confidence    the confidence of the combination of computation node
      *                      and endpoint tuple
      */
-    public void add(Node node, SamCodeEndpointTuple endpointTuple, Confidence confidence) {
-        NodeResult nodeResult = resultMap.getOrDefault(node, new NodeResult());
+    public void add(Node node, Pair<ArchitectureItem, CodeCompilationUnit> endpointTuple, Confidence confidence) {
+        NodeResult nodeResult = this.resultMap.getOrDefault(node, new NodeResult());
         nodeResult.add(endpointTuple, confidence);
-        resultMap.put(node, nodeResult);
+        this.resultMap.put(node, nodeResult);
     }
 
     /**
@@ -106,11 +108,11 @@ public class ComputationResult {
      *                      computation result
      */
     public void addAll(ComputationResult partialResult) {
-        resultMap.putAll(partialResult.resultMap);
+        this.resultMap.putAll(partialResult.resultMap);
     }
 
     public void addNodeResult(Node node, NodeResult nodeResult) {
-        resultMap.put(node, nodeResult);
+        this.resultMap.put(node, nodeResult);
     }
 
     /**
@@ -122,21 +124,21 @@ public class ComputationResult {
      *         otherwise
      */
     public boolean exists(Node node) {
-        return resultMap.containsKey(node);
+        return this.resultMap.containsKey(node);
     }
 
-    public List<String> getConfidenceStrings(Node node, EndpointTuple endpointTuple) {
-        Map<String, Integer> levelToConfidences = getConfidenceStringsToLevelMap(node, endpointTuple, 1);
+    public List<String> getConfidenceStrings(Node node, Pair<ArchitectureItem, CodeCompilationUnit> endpointTuple) {
+        Map<String, Integer> levelToConfidences = this.getConfidenceStringsToLevelMap(node, endpointTuple, 1);
         return levelToConfidences.entrySet().stream().sorted(Map.Entry.comparingByValue()).map(Map.Entry::getKey).toList();
     }
 
-    private Map<String, Integer> getConfidenceStringsToLevelMap(Node node, EndpointTuple endpointTuple, int level) {
+    private Map<String, Integer> getConfidenceStringsToLevelMap(Node node, Pair<ArchitectureItem, CodeCompilationUnit> endpointTuple, int level) {
         Map<String, Integer> confidenceToLevel = new LinkedHashMap<>();
-        Confidence confidence = getNodeResult(node).getConfidence(endpointTuple);
+        Confidence confidence = this.getNodeResult(node).getConfidence(endpointTuple);
         String confidenceString = "Level " + level + ": " + node.toString() + ", Confidence: " + confidence;
         confidenceToLevel.put(confidenceString, level);
         for (Node child : node.getChildren()) {
-            confidenceToLevel.putAll(getConfidenceStringsToLevelMap(child, endpointTuple, level + 1));
+            confidenceToLevel.putAll(this.getConfidenceStringsToLevelMap(child, endpointTuple, level + 1));
         }
         return confidenceToLevel;
     }
