@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.id.tests.integration.inconsistencyhelper;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,7 +27,7 @@ import edu.kit.kastel.mcse.ardoco.tlr.textextraction.TextExtraction;
  * Produces the inconsistency detection runs. The first run uses all model elements for the baseline. For each subsequent run a single model element is removed
  * to simulate a missing model element.
  */
-public class HoldBackRunResultsProducer implements Serializable {
+public class HoldBackRunResultsProducer {
     protected File inputText;
     protected File inputModel;
     protected SortedMap<String, String> additionalConfigs;
