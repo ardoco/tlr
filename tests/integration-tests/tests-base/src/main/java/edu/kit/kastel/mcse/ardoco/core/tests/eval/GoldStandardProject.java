@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 /**
  * Interface for all Project extensions
  */
-public interface GoldStandardProject extends Serializable {
+public interface GoldStandardProject {
     /**
      * {@return the project the instance is based on}
      */
@@ -38,7 +37,7 @@ public interface GoldStandardProject extends Serializable {
      * {@return the version of the source files of this project}
      */
     default long getSourceFilesVersion() {
-        getResourceNames().forEach(this::validateResourceChecksum);
+        this.getResourceNames().forEach(this::validateResourceChecksum);
         return Preferences.userNodeForPackage(getClass()).getLong("version", -1L);
     }
 
@@ -53,8 +52,9 @@ public interface GoldStandardProject extends Serializable {
         var cls = getClass();
         var logger = LoggerFactory.getLogger(cls);
         try (var resource = cls.getResourceAsStream(resourceName)) {
-            if (resource == null)
+            if (resource == null) {
                 throw new MissingResourceException("No such resource at path " + resourceName, File.class.getSimpleName(), resourceName);
+            }
             String md5 = DigestUtils.md5Hex(resource);
             if (!Objects.equals(Preferences.userNodeForPackage(cls).get(resourceName, null), md5)) {
                 Preferences.userNodeForPackage(cls).put(resourceName, md5);
@@ -74,7 +74,7 @@ public interface GoldStandardProject extends Serializable {
      * {@return the project alias}
      */
     default String getAlias() {
-        return getProjectOrThrow().getAlias();
+        return this.getProjectOrThrow().getAlias();
     }
 
     /**
@@ -83,14 +83,14 @@ public interface GoldStandardProject extends Serializable {
      * @return the File that represents the model for this project
      */
     default File getModelFile() {
-        return getProjectOrThrow().getModelFile();
+        return this.getProjectOrThrow().getModelFile();
     }
 
     /**
      * {@return the resource name that represents the model for this project}
      */
     default String getModelResourceName() {
-        return getProjectOrThrow().getModelResourceName();
+        return this.getProjectOrThrow().getModelResourceName();
     }
 
     /**
@@ -100,7 +100,7 @@ public interface GoldStandardProject extends Serializable {
      * @return the File that represents the model for this project
      */
     default File getModelFile(ArchitectureModelType modelType) {
-        return getProjectOrThrow().getModelFile(modelType);
+        return this.getProjectOrThrow().getModelFile(modelType);
     }
 
     /**
@@ -109,7 +109,7 @@ public interface GoldStandardProject extends Serializable {
      * @param modelType the model type
      */
     default String getModelResourceName(ArchitectureModelType modelType) {
-        return getProjectOrThrow().getModelResourceName(modelType);
+        return this.getProjectOrThrow().getModelResourceName(modelType);
     }
 
     /**
@@ -118,14 +118,14 @@ public interface GoldStandardProject extends Serializable {
      * @return the File that represents the text for this project
      */
     default File getTextFile() {
-        return getProjectOrThrow().getTextFile();
+        return this.getProjectOrThrow().getTextFile();
     }
 
     /**
      * {@return the resource name that represents the text for this project}
      */
     default String getTextResourceName() {
-        return getProjectOrThrow().getTextResourceName();
+        return this.getProjectOrThrow().getTextResourceName();
     }
 
     /**
@@ -134,7 +134,7 @@ public interface GoldStandardProject extends Serializable {
      * @return the map of additional configuration options
      */
     default SortedMap<String, String> getAdditionalConfigurations() {
-        return getProjectOrThrow().getAdditionalConfigurations();
+        return this.getProjectOrThrow().getAdditionalConfigurations();
     }
 
     /**
@@ -143,14 +143,14 @@ public interface GoldStandardProject extends Serializable {
      * @return the file for additional configurations
      */
     default File getAdditionalConfigurationsFile() {
-        return getProjectOrThrow().getAdditionalConfigurationsFile();
+        return this.getProjectOrThrow().getAdditionalConfigurationsFile();
     }
 
     /**
      * {@return the resource name that represents the additional configurations for this project}
      */
     default String getAdditionalConfigurationsResourceName() {
-        return getProjectOrThrow().getAdditionalConfigurationsResourceName();
+        return this.getProjectOrThrow().getAdditionalConfigurationsResourceName();
     }
 
     /**
@@ -159,14 +159,14 @@ public interface GoldStandardProject extends Serializable {
      * @return the File that represents the gold standard for this project
      */
     default File getTlrGoldStandardFile() {
-        return getProjectOrThrow().getTlrGoldStandardFile();
+        return this.getProjectOrThrow().getTlrGoldStandardFile();
     }
 
     /**
      * {@return the resource name that represents the TLR {@link GoldStandard} for this project}
      */
     default String getTlrGoldStandardResourceName() {
-        return getProjectOrThrow().getTlrGoldStandardResourceName();
+        return this.getProjectOrThrow().getTlrGoldStandardResourceName();
     }
 
     /**
@@ -175,7 +175,7 @@ public interface GoldStandardProject extends Serializable {
      * @return a list with the entries of the goldstandard for TLR
      */
     default ImmutableList<String> getTlrGoldStandard() {
-        return getProjectOrThrow().getTlrGoldStandard();
+        return this.getProjectOrThrow().getTlrGoldStandard();
     }
 
     /**
@@ -185,39 +185,39 @@ public interface GoldStandardProject extends Serializable {
      * @return the {@link GoldStandard} for this project
      */
     default GoldStandard getTlrGoldStandard(ArchitectureModel architectureModel) {
-        return getProjectOrThrow().getTlrGoldStandard(architectureModel);
+        return this.getProjectOrThrow().getTlrGoldStandard(architectureModel);
     }
 
     default MutableList<String> getMissingTextForModelElementGoldStandard() {
-        return getProjectOrThrow().getMissingTextForModelElementGoldStandard();
+        return this.getProjectOrThrow().getMissingTextForModelElementGoldStandard();
     }
 
     /**
      * {@return the {@link GoldStandard} for this project}
      */
     default File getMissingTextForModelElementGoldStandardFile() {
-        return getProjectOrThrow().getMissingTextForModelElementGoldStandardFile();
+        return this.getProjectOrThrow().getMissingTextForModelElementGoldStandardFile();
     }
 
     /**
      * {@return the resource name that represents the MME {@link GoldStandard} for this project}
      */
     default String getMissingTextForModelElementGoldStandardResourceName() {
-        return getProjectOrThrow().getMissingTextForModelElementGoldStandardResourceName();
+        return this.getProjectOrThrow().getMissingTextForModelElementGoldStandardResourceName();
     }
 
     /**
      * {@return the expected results for Traceability Link Recovery}
      */
     default ExpectedResults getExpectedTraceLinkResults() {
-        return getProjectOrThrow().getExpectedTraceLinkResults();
+        return this.getProjectOrThrow().getExpectedTraceLinkResults();
     }
 
     /**
      * {@return the expected results for Inconsistency Detection}
      */
     default ExpectedResults getExpectedInconsistencyResults() {
-        return getProjectOrThrow().getExpectedInconsistencyResults();
+        return this.getProjectOrThrow().getExpectedInconsistencyResults();
     }
 
     /**
@@ -226,7 +226,7 @@ public interface GoldStandardProject extends Serializable {
      * @return the project this instance belongs to
      */
     private Project getProjectOrThrow() {
-        return getFromName().orElseThrow();
+        return this.getFromName().orElseThrow();
     }
 
     /**
@@ -236,7 +236,7 @@ public interface GoldStandardProject extends Serializable {
      */
     private Optional<Project> getFromName() {
         for (Project project : Project.values()) {
-            if (project.name().equalsIgnoreCase(getProjectName())) {
+            if (project.name().equalsIgnoreCase(this.getProjectName())) {
                 return Optional.of(project);
             }
         }

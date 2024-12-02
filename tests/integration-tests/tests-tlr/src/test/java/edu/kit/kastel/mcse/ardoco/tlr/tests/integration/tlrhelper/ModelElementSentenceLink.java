@@ -6,7 +6,6 @@ import java.util.Comparator;
 import edu.kit.kastel.mcse.ardoco.core.api.entity.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.tracelink.SadSamTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.common.Internal;
 
 /**
  * Represents a simple trace link by the id of the model and number of the sentence involved.
@@ -17,7 +16,6 @@ public record ModelElementSentenceLink(String modelElementId, int sentenceNumber
         this(traceLink.getArchitectureEntityId(), traceLink.getSentenceNumber());
     }
 
-    @Internal
     public ModelElementSentenceLink(SentenceEntity sentence, ArchitectureEntity architectureEntity) {
         this(architectureEntity.getId(), sentence.getSentence().getSentenceNumber());
     }

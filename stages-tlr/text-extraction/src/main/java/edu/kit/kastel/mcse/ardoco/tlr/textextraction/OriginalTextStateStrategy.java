@@ -1,7 +1,6 @@
 /* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.tlr.textextraction;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -20,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
-public class OriginalTextStateStrategy extends DefaultTextStateStrategy implements Serializable {
+public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
 
     protected OriginalTextStateStrategy() {
     }
